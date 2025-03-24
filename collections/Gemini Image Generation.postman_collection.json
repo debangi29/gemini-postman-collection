@@ -1,297 +1,298 @@
 {
-	"info": {
-		"_postman_id": "b9d1f7f9-6d57-4707-8fde-2bb6ee9c821a",
-		"name": "Gemini Image Generation",
-		"description": "## **Gemini Text-to-Image Generation API**\n\n### 📌 **Overview**\n\nThe **Gemini Text-to-Image Generation API Collection** in Postman allows users to generate images from textual descriptions using the **gemini-2.0-flash-exp-image-generation** model. This API can be used for:\n\n- **Generating AI-rendered images from text prompts**\n    \n\n---\n\n## 📂 **Collection Structure**\n\n### **1\\. Generate Image from Text**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}`\n    \n- **Description:** Generates an AI-rendered image based on a text prompt.\n    \n- **Content:** It has the descrption of the image to be generated using text.\n    \n- **Use Case:** Creating AI-generated images based on user-provided descriptions.\n    \n\n---\n\n## **🔧 Setup & Usage**\n\n### **1️⃣ Configuring Postman Environment**\n\nCreate a **Postman Environment** with the following variables:\n\n| Variable | Description | Example Value |\n| --- | --- | --- |\n| `base_url` | API base endpoint | `https://generativelanguage.googleapis.com/v1beta` |\n| `api_key` | Your Google API Key | `your_api_key` |\n| `model_name_image_gen` | Gemini Image Generation Model | `gemini-2.0-flash-exp-image-generation` |\n\n---\n\n### **2️⃣ Running the Requests**\n\n1. **Select the Gemini Image Generation Collection** in Postman.\n    \n2. **Choose the API request** (_Generate Image from Text_).\n    \n3. **Ensure your environment is active** (containing `base_url` and `api_key`).\n    \n4. **Click Send** to generate an image.\n    \n\n---\n\n## **📖 Example Responses**\n\n### ✅ **Successful Response (200 OK) : Responds with a base64 encoded image data.**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"inlineData\": {\n              \"mimeType\": \"image/png\",\n              \"data\": \"<base64_encoded_image_data>\"\n            }\n          }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\n### ❌ **Error Responses**\n\n#### **400 - Bad Request**\n\n``` json\n{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n\n ```\n\n#### **401 - Unauthorized**\n\n``` json\n{\n  \"error\": {\n    \"code\": 401,\n    \"message\": \"Invalid API key. Please provide a valid API key.\",\n    \"status\": \"UNAUTHENTICATED\"\n  }\n}\n\n ```\n\n#### **429 - Rate Limit Exceeded**\n\n``` json\n{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error occurred. Please try again later.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n\n ```\n\n#### **500 - Internal Server Error**\n\n``` json\n{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded. Reduce request frequency or upgrade quota.\",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n\n ```\n\n---\n\n## **🛠 Test Script Explanation**\n\nThe API responses are validated using a Postman test script  \nThis script:\n\n- ✅ Ensures the API returns a **200 OK** response.\n    \n- ✅ Verifies the response contains **image data** in the expected format.\n    \n\n---\n\n## **📌 Key Features & Use Cases**\n\n✅ **Text-to-Image Generation:** Create AI-generated images from textual descriptions.  \n✅ **Creative Visualizations:** Generate conceptual and artistic renderings.\n\n## **📢 Conclusion**\n\nThe **Gemini Text-to-Image Generation API Postman Collection allows** users to generate AI-powered images from text descriptions for various applications, including design, storytelling, and research.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "37275786",
-		"_collection_link": "https://www.postman.com/satellite-explorer-78084950/geminiexplorr/collection/ihdlvff/gemini-image-generation?action=share&source=collection_link&creator=37275786"
-	},
-	"item": [
-		{
-			"name": "Text-to-Image Generation",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains image data\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"inlineData\");\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0].inlineData).to.have.property(\"data\");\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"models",
-						"{{model_name_image_gen}}:generateContent"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{api_key}}"
-						}
-					]
-				},
-				"description": "### **📝 Text to Image Generation Feature**\n\n#### **📌 Purpose**\n\nThe Gemini API can generate **AI-rendered images** based on textual descriptions. This allows users to create **custom, AI-generated images** for various creative and professional applications.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\nHere, model is `gemini-2.0-flash-exp-image-generation` for generating images\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing a textual description of the image to be generated. |\n| `generationConfig` | Object | Specifies output format (`Text`, `Image`, or both). |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [{\n    \"parts\": [\n      {\"text\": \"Hi, can you create a 3D rendered image of a pig with wings and a top hat flying over a happy futuristic sci-fi city with lots of greenery?\"}\n    ]\n  }],\n  \"generationConfig\": {\"responseModalities\": [\"Text\", \"Image\"]}\n}\n\n ```\n\n#### **✅ Expected Response (Status 200)**\n\n- A **generated image** of the described scene.\n    \n- Accompanying text-based metadata or description.\n    \n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure the `contents` array is correctly formatted. |\n| `401` | \"Invalid API key.\" | Verify that your API key is valid and active. |\n| `403` | \"Permission denied.\" | Check if your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce the request frequency or upgrade your quota. |\n| `500` | \"Internal Server Error\" | Retry after some time or report the issue to support. |\n\nThe **Examples** of Successful and Error Responses are added in the **Text to Image generation** Request example Sections.\n\n#### **📌 How to Use**\n\n1. **Define an image description** in natural language.\n    \n2. **Set the response mode** to `\"Image\"` or both `\"Text\", \"Image\"`.\n    \n3. **Send a POST request** to the Gemini API.\n    \n4. **Receive a base64 encoded generated image** in your application.\n    \n5. To get the actual image **base64 decode** it\n    \n\n#### **✅Use Case**\n\nThis feature is useful for **concept art, creative design, and AI-assisted visualization** in futuristic and imaginative settings."
-			},
-			"response": [
-				{
-					"name": "Text-to-Image Generation 200",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"A futuristic city with flying cars and neon lights.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name_image_gen}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"inlineData\": {\r\n              \"mimeType\": \"image/jpeg\",\r\n              \"data\": \"/9j/4AAQSkZJRgABAQEASABIAAD/4.....\" \r\n            }\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				{
-					"name": "Text-to-Image Generation 400",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name_image_gen}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
-				},
-				{
-					"name": "Text-to-Image Generation 401",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name_image_gen}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
-				},
-				{
-					"name": "Text-to-Image Generation 403",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name_image_gen}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
-				},
-				{
-					"name": "Text-to-Image Generation 500",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name_image_gen}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
-				},
-				{
-					"name": "Text-to-Image Generation 429",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name_image_gen}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Too Many Requests",
-					"code": 429,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t\r\n"
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "b9d1f7f9-6d57-4707-8fde-2bb6ee9c821a",
+    "name": "Gemini Image Generation",
+    "description": "## **Gemini Text-to-Image Generation API**\n\n### 📌 **Overview**\n\nThe **Gemini Text-to-Image Generation API Collection** in Postman allows users to generate images from textual descriptions using the **gemini-2.0-flash-exp-image-generation** model. This API can be used for:\n\n- **Generating AI-rendered images from text prompts**\n    \n\n---\n\n## 📂 **Collection Structure**\n\n### **1\\. Generate Image from Text**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}`\n    \n- **Description:** Generates an AI-rendered image based on a text prompt.\n    \n- **Content:** It has the descrption of the image to be generated using text.\n    \n- **Use Case:** Creating AI-generated images based on user-provided descriptions.\n    \n\n---\n\n## **🔧 Setup & Usage**\n\n### **1️⃣ Configuring Postman Environment**\n\nCreate a **Postman Environment** with the following variables:\n\n| Variable | Description | Example Value |\n| --- | --- | --- |\n| `base_url` | API base endpoint | `https://generativelanguage.googleapis.com/v1beta` |\n| `api_key` | Your Google API Key | `your_api_key` |\n| `model_name_image_gen` | Gemini Image Generation Model | `gemini-2.0-flash-exp-image-generation` |\n\n---\n\n### **2️⃣ Running the Requests**\n\n1. **Select the Gemini Image Generation Collection** in Postman.\n    \n2. **Choose the API request** (_Generate Image from Text_).\n    \n3. **Ensure your environment is active** (containing `base_url` and `api_key`).\n    \n4. **Click Send** to generate an image.\n    \n\n---\n\n## **📖 Example Responses**\n\n### ✅ **Successful Response (200 OK) : Responds with a base64 encoded image data.**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"inlineData\": {\n              \"mimeType\": \"image/png\",\n              \"data\": \"<base64_encoded_image_data>\"\n            }\n          }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\n### ❌ **Error Responses**\n\n#### **400 - Bad Request**\n\n``` json\n{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n\n ```\n\n#### **401 - Unauthorized**\n\n``` json\n{\n  \"error\": {\n    \"code\": 401,\n    \"message\": \"Invalid API key. Please provide a valid API key.\",\n    \"status\": \"UNAUTHENTICATED\"\n  }\n}\n\n ```\n\n#### **429 - Rate Limit Exceeded**\n\n``` json\n{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error occurred. Please try again later.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n\n ```\n\n#### **500 - Internal Server Error**\n\n``` json\n{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded. Reduce request frequency or upgrade quota.\",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n\n ```\n\n---\n\n## **🛠 Test Script Explanation**\n\nThe API responses are validated using a Postman test script  \nThis script:\n\n- ✅ Ensures the API returns a **200 OK** response.\n    \n- ✅ Verifies the response contains **image data** in the expected format.\n    \n\n---\n\n## **📌 Key Features & Use Cases**\n\n✅ **Text-to-Image Generation:** Create AI-generated images from textual descriptions.  \n✅ **Creative Visualizations:** Generate conceptual and artistic renderings.\n\n## **📢 Conclusion**\n\nThe **Gemini Text-to-Image Generation API Postman Collection allows** users to generate AI-powered images from text descriptions for various applications, including design, storytelling, and research.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "37275786",
+    "_collection_link": "https://www.postman.com/satellite-explorer-78084950/geminiexplorr/collection/ihdlvff/gemini-image-generation?action=share&source=collection_link&creator=37275786",
+    "lastUpdated": "2025-03-24T16:03:50.539Z"
+  },
+  "item": [
+    {
+      "name": "Text-to-Image Generation",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains image data\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"inlineData\");\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0].inlineData).to.have.property(\"data\");\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "models",
+            "{{model_name_image_gen}}:generateContent"
+          ],
+          "query": [
+            {
+              "key": "key",
+              "value": "{{api_key}}"
+            }
+          ]
+        },
+        "description": "### **📝 Text to Image Generation Feature**\n\n#### **📌 Purpose**\n\nThe Gemini API can generate **AI-rendered images** based on textual descriptions. This allows users to create **custom, AI-generated images** for various creative and professional applications.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\nHere, model is `gemini-2.0-flash-exp-image-generation` for generating images\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing a textual description of the image to be generated. |\n| `generationConfig` | Object | Specifies output format (`Text`, `Image`, or both). |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [{\n    \"parts\": [\n      {\"text\": \"Hi, can you create a 3D rendered image of a pig with wings and a top hat flying over a happy futuristic sci-fi city with lots of greenery?\"}\n    ]\n  }],\n  \"generationConfig\": {\"responseModalities\": [\"Text\", \"Image\"]}\n}\n\n ```\n\n#### **✅ Expected Response (Status 200)**\n\n- A **generated image** of the described scene.\n    \n- Accompanying text-based metadata or description.\n    \n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure the `contents` array is correctly formatted. |\n| `401` | \"Invalid API key.\" | Verify that your API key is valid and active. |\n| `403` | \"Permission denied.\" | Check if your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce the request frequency or upgrade your quota. |\n| `500` | \"Internal Server Error\" | Retry after some time or report the issue to support. |\n\nThe **Examples** of Successful and Error Responses are added in the **Text to Image generation** Request example Sections.\n\n#### **📌 How to Use**\n\n1. **Define an image description** in natural language.\n    \n2. **Set the response mode** to `\"Image\"` or both `\"Text\", \"Image\"`.\n    \n3. **Send a POST request** to the Gemini API.\n    \n4. **Receive a base64 encoded generated image** in your application.\n    \n5. To get the actual image **base64 decode** it\n    \n\n#### **✅Use Case**\n\nThis feature is useful for **concept art, creative design, and AI-assisted visualization** in futuristic and imaginative settings."
+      },
+      "response": [
+        {
+          "name": "Text-to-Image Generation 200",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"A futuristic city with flying cars and neon lights.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name_image_gen}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"inlineData\": {\r\n              \"mimeType\": \"image/jpeg\",\r\n              \"data\": \"/9j/4AAQSkZJRgABAQEASABIAAD/4.....\" \r\n            }\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        {
+          "name": "Text-to-Image Generation 400",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name_image_gen}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+        },
+        {
+          "name": "Text-to-Image Generation 401",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name_image_gen}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+        },
+        {
+          "name": "Text-to-Image Generation 403",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name_image_gen}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+        },
+        {
+          "name": "Text-to-Image Generation 500",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name_image_gen}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+        },
+        {
+          "name": "Text-to-Image Generation 429",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"contents\": [{\r\n      \"parts\": [\r\n        {\"text\": \"Hi, can you create a 3d rendered image of a pig with wings and a top hat flying over a happy futuristic scifi city with lots of greenery?\"}\r\n      ]\r\n    }],\r\n    \"generationConfig\":{\"responseModalities\":[\"Text\",\"Image\"]}\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name_image_gen}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name_image_gen}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t\r\n"
+        }
+      ]
+    }
+  ]
 }

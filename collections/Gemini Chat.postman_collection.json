@@ -1,882 +1,883 @@
 {
-	"info": {
-		"_postman_id": "a5aa846c-8ccc-4fa4-8c05-e6c5550babfc",
-		"name": "Gemini Chat",
-		"description": "## **📌 Overview of the Gemini Chat Collection**\n\nThe **Gemini Chat API Collection** in Postman allows users to interact with Google's **gemini-1.5-pro-latest** model for natural language processing (NLP) tasks, including chat-based conversations, AI-assisted responses, and conversational history handling.\n\nThis collection includes requests for:\n\n- **Starting a new chat session**\n    \n- **Continuing a conversation with history**\n    \n- **Using custom parameters for fine-tuned responses**\n    \n\n---\n\n## 📂 **Collection Structure**\n\n### **1\\. Start Chat**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}`\n    \n- **Description:** Initiates a new conversation with Gemini.\n    \n- **Request Body Example**\n    \n\n``` json\n{\n    \"contents\": [\n      {\n        \"parts\": [\n          { \"text\": \"Hello Gemini, how are you today?\" }\n        ]\n      }\n    ]\n  }\n\n ```\n\n- **Use Case:** Basic text-based interaction with Gemini.\n    \n\n---\n\n### **2\\. Chat with History**\n\n- **Method:** `POST`\n    \n- **Description:** Allows Gemini to maintain conversation context.\n    \n- **Request Body Example:**\n    \n    ``` json\n        {\n        \"contents\": [\n        {\n        \"parts\": [\n        { \"text\": \"Can you summarize our conversation so far?\" }\n        ]\n        }\n        ],\n        \"conversationHistory\": [\n        {\n        \"contents\": [\n        {\n        \"parts\": [\n        { \"text\": \"Explain recursion in Python.\" }\n        ]\n        }\n        ]\n        }\n        ]\n        }\n    \n     ```\n    \n\n- **Use Case:** Useful for AI chatbots requiring memory retention.\n    \n\n---\n\n### **3\\. Chat with Parameters**\n\n- **Method:** `POST`\n    \n- **Description:** Customizes Gemini’s response style.\n    \n- **Request Body Example**\n    \n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        { \"text\": \"Tell me an interesting fact about space.\" }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"temperature\": 0.8,\n    \"top_p\": 0.9,\n    \"top_k\": 50\n  }\n}\n\n ```\n\n- **Use Case:** Basic text-based interaction with Gemini.\n    \n\n## **🔧 Setup & Usage**\n\n### **1️⃣ Configuring Postman Environment**\n\nCreate a **Postman Environment** with the following variables:\n\n| Variable | Description | Example Value |\n| --- | --- | --- |\n| `base_url` | API base endpoint | `https://generativelanguage.googleapis.com/v1beta` |\n| `api_key` | Your Google API Key | `your_api_key` |\n| `model_name` | Gemini Model | `gemini-1.5-pro-latest` |\n\n---\n\n### **2️⃣ Running the Requests**\n\n1. **Select the Gemini Chat Collection** in Postman.\n    \n2. **Choose an API request** (e.g., _Start Chat_).\n    \n3. **Ensure your environment is active** (containing `base_url` and `api_key`).\n    \n4. **Click Send** to get a response.\n    \n\n---\n\n## **📖 Example Responses**\n\n### ✅ **Successful Response (200 OK)**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          { \"text\": \"Machine learning is a field of AI that enables systems to learn patterns from data.\" }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\n### ❌ **Error Responses**\n\n#### **400 - Bad Request**\n\n``` json\n{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n\n ```\n\n#### **401 - Unauthorized**\n\n``` json\n{\n  \"error\": {\n    \"code\": 401,\n    \"message\": \"Invalid API key. Please provide a valid API key.\",\n    \"status\": \"UNAUTHENTICATED\"\n  }\n}\n\n ```\n\n#### **403 - Permission Denied**\n\n``` json\n{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Permission denied. Ensure the API is enabled and the key has the correct permissions.\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n\n ```\n\n#### **429 - Rate Limit Exceeded**\n\n``` json\n{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded. Reduce request frequency or upgrade quota.\",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n\n ```\n\n#### **500 - Internal Server Error**\n\n``` json\n{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error occurred. Please try again later.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n\n ```\n\n---\n\n## **📖Test Script Explanation**\n\nThe API Responses are tested using the test script:\n\n``` javascript\npm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\npm.test(\"Response contains 'candidates'\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData).to.have.property(\"candidates\");\n    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\n});\npm.test(\"Response contains valid text output\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\n    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\n});\n\n ```\n\nThis script:\n\n- ✅ Ensures the API returns a **200 OK** response.\n    \n- ✅ Verifies the response contains a **'candidates'** array.\n    \n- ✅ Checks that the response text output is **valid and non-empty**.\n    \n\n---\n\n## **📌 Key Features & Use Cases**\n\n✅ **Conversational AI:** Build real-time chatbots.  \n✅ **Memory Retention:** Maintain chat context over multiple requests.  \n✅ **Customizable Responses:** Control tone, temperature, and randomness.\n\n## **📢 Conclusion**\n\nWith the **Gemini Chat API Postman Collection**, one can effortlessly interact with AI for **chat-based applications**, **AI-powered assistance**, and **customized conversations!**",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "37275786",
-		"_collection_link": "https://www.postman.com/satellite-explorer-78084950/geminiexplorr/collection/8jqv0h0/gemini-chat?action=share&source=collection_link&creator=37275786"
-	},
-	"item": [
-		{
-			"name": "Start Chat",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains 'candidates'\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
-							"    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains valid text output\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"models",
-						"{{model_name}}:generateContent"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{api_key}}"
-						}
-					]
-				},
-				"description": "### **Start Chat**\n\n#### **📌 Purpose**\n\nThis endpoint starts a new chat session with the **Gemini** model.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | The user input message in structured text format. |\n\nThe Gemini AI model responds with a text response (Status Code `200`)✅\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure you provide a valid `contents` array. |\n| `401` | \"Invalid API key.\" | Check if your API key is correct and active. |\n| `403` | \"Permission denied.\" | Ensure your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce request frequency or upgrade quota. |\n| `500` | \"Internal Server Error\" | Retry after some time. If persistent, report to API support. |\n\n---\n\nThe **Examples** of Successful and Error Responses are added in the **Start Chat** Request example Sections.\n\n#### **Use Cases:**\n\n✅It can be useful when\n\nWhen you want to start a fresh conversation without any context from previous messages.  \nFor example,\n\n- Asking one-off questions where past interactions are not needed.\n    \n- Starting a new chatbot session."
-			},
-			"response": [
-				{
-					"name": "Start Chat 200",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				{
-					"name": "Start Chat 400",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
-				},
-				{
-					"name": "Start Chat 401",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
-				},
-				{
-					"name": "Start Chat 403",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
-				},
-				{
-					"name": "Start Chat 500",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
-				},
-				{
-					"name": "Start Chat 429",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Too Many Requests",
-					"code": 429,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
-				}
-			]
-		},
-		{
-			"name": "Chat with History",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains 'candidates'\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
-							"    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains valid text output\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"models",
-						"{{model_name}}:generateContent"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{api_key}}"
-						}
-					]
-				},
-				"description": "### **Chat With History**\n\nThis request generates text replies using Google's Gemini API.\n\n- It accepts text prompts inside \"contents\".\n    \n- The API responds with generated text based on the prompt messages.\n    \n- It replies with a text based on the **previous conversation** (history) and the current message.\n    \n- \"model\" specify the model's responses and \"user\" denotes the messages by the user.\n    \n\n#### **📌 Purpose**\n\nThe Gemini API supports multi-turn conversations by allowing users to maintain a chat history. This enables Gemini to respond with **contextual awareness,** remembering previous interactions.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | Array containing the structured conversation history. Each entry has a `role` (either `user` or `model`) and a `parts` array containing the text messages. |\n\nThe Gemini AI model responds with a text response (Status Code `200`)✅, keeping in mind the previous conversations.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure you provide a valid `contents` array. |\n| `401` | \"Invalid API key.\" | Check if your API key is correct and active. |\n| `403` | \"Permission denied.\" | Ensure your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce request frequency or upgrade quota. |\n| `500` | \"Internal Server Error\" | Retry after some time. If persistent, report to API support. |\n\n---\n\nThe **Examples** of Successful and Error Responses are added in the **Chat With History** Request example Sections.\n\n#### ✅ **Use Cases:**\n\nIt can be useful when you want the AI to **remember previous messages** and **continue a conversation** with context.  \nFor example,\n\n- Long-form discussions\n    \n- Useful for AI chatbots requiring memory retention.\n    \n- Technical troubleshooting"
-			},
-			"response": [
-				{
-					"name": "Chat with History 200",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ],\r\n      \"role\": \"model\"\r\n    },\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"Sure! Here’s an example of a POST request using `curl`:\\n\\n```bash\\ncurl -X POST \\\"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=YOUR_API_KEY\\\" \\\\\\n  -H \\\"Content-Type: application/json\\\" \\\\\\n  -d '{\\n    \\\"contents\\\": [\\n      { \\\"parts\\\": [{ \\\"text\\\": \\\"Hello, Gemini!\\\" }] }\\n    ]\\n  }'\\n```\\n\\nThis request sends a message to the Gemini API and retrieves a generated response. Let me know if you need more details!\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				{
-					"name": "Chat with History 400",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
-				},
-				{
-					"name": "Chat with History 401",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
-				},
-				{
-					"name": "Chat with History 403",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
-				},
-				{
-					"name": "Chat with History 500",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
-				},
-				{
-					"name": "Chat with History 429",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Too Many Requests",
-					"code": 429,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
-				}
-			]
-		},
-		{
-			"name": "Chat with Parameters",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains 'candidates'\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
-							"    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains valid text output\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"models",
-						"{{model_name}}:generateContent"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{api_key}}"
-						}
-					]
-				},
-				"description": "### Chat With Parameters Restriction\n\n#### **📌 Purpose**\n\nThis request generates **chat replies** using Google's Gemini API.\n\n- It accepts a text prompt inside \"contents\".\n    \n- The API responds with generated text based on the prompt chat\n    \n- You can modify the response behavior using optional parameters (temperature, top_p, top_k).\n    \n\n#### **🔗 Request URL**\n\n```\n/models/:generateContent?key=<GOOGLE_API_KEY>\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📤 The Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `temperature` | Float | Controls randomness (0.0-1.0, default is 0.7). |\n| `top_p` | Float | Nucleus sampling parameter (0.0-1.0). |\n| `top_k` | Integer | Limits the token choices per step. |\n\n- **Parameters usage**:\n    \n    - **Temperature (0.0 - 1.0):** Controls randomness; lower values make responses precise, and higher values make them creative.\n        \n    - **top-p (0.0 - 1.0):** Limits token choices to a probability threshold, balancing focus and diversity.\n        \n    - **top-k (Integer):** Restricts choices to the top K probable words, affecting coherence and variety.\n        \n\n###### Recommended Settings: (One can adjust according to need)\n\n- **Precise & factual responses:** `temperature=0.2, top_p=0.3, top_k=10`\n    \n- **Balanced responses:** `temperature=0.6, top_p=0.8, top_k=20`\n    \n- **Creative & diverse responses:** `temperature=0.9, top_p=1.0, top_k=40`\n    \n\nThe Gemini AI model responds with a text response (Status Code `200`)✅, keeping in mind the parameters provided as input.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure you provide a valid `contents` array. |\n| `401` | \"Invalid API key.\" | Check if your API key is correct and active. |\n| `403` | \"Permission denied.\" | Ensure your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce request frequency or upgrade quota. |\n| `500` | \"Internal Server Error\" | Retry after some time. If persistent, report to API support. |\n\n**Examples** of successful and error responses are added to the **chat with parameters** request example sections.\n\n#### **Use Cases:**\n\n✅It can be useful when\n\nWhen you want to start a fresh conversation without any context from previous messages.  \nFor example,\n\n- Asking one-off questions where past interactions are not needed.\n    \n- Starting a new chatbot session."
-			},
-			"response": [
-				{
-					"name": "Chat with Parameters 200",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"Did you know that in space, metal surfaces can weld together without heat or melting? This phenomenon, called 'cold welding,' happens because there is no oxidized layer between the metals in a vacuum!\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				{
-					"name": "Chat with Parameters 400",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
-				},
-				{
-					"name": "Chat with Parameters 401",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
-				},
-				{
-					"name": "Chat with Parameters 403",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
-				},
-				{
-					"name": "Chat with Parameters 500",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
-				},
-				{
-					"name": "Chat with Parameters 429",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Too Many Requests",
-					"code": 429,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "a5aa846c-8ccc-4fa4-8c05-e6c5550babfc",
+    "name": "Gemini Chat",
+    "description": "## **📌 Overview of the Gemini Chat Collection**\n\nThe **Gemini Chat API Collection** in Postman allows users to interact with Google's **gemini-1.5-pro-latest** model for natural language processing (NLP) tasks, including chat-based conversations, AI-assisted responses, and conversational history handling.\n\nThis collection includes requests for:\n\n- **Starting a new chat session**\n    \n- **Continuing a conversation with history**\n    \n- **Using custom parameters for fine-tuned responses**\n    \n\n---\n\n## 📂 **Collection Structure**\n\n### **1\\. Start Chat**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}`\n    \n- **Description:** Initiates a new conversation with Gemini.\n    \n- **Request Body Example**\n    \n\n``` json\n{\n    \"contents\": [\n      {\n        \"parts\": [\n          { \"text\": \"Hello Gemini, how are you today?\" }\n        ]\n      }\n    ]\n  }\n\n ```\n\n- **Use Case:** Basic text-based interaction with Gemini.\n    \n\n---\n\n### **2\\. Chat with History**\n\n- **Method:** `POST`\n    \n- **Description:** Allows Gemini to maintain conversation context.\n    \n- **Request Body Example:**\n    \n    ``` json\n        {\n        \"contents\": [\n        {\n        \"parts\": [\n        { \"text\": \"Can you summarize our conversation so far?\" }\n        ]\n        }\n        ],\n        \"conversationHistory\": [\n        {\n        \"contents\": [\n        {\n        \"parts\": [\n        { \"text\": \"Explain recursion in Python.\" }\n        ]\n        }\n        ]\n        }\n        ]\n        }\n    \n     ```\n    \n\n- **Use Case:** Useful for AI chatbots requiring memory retention.\n    \n\n---\n\n### **3\\. Chat with Parameters**\n\n- **Method:** `POST`\n    \n- **Description:** Customizes Gemini’s response style.\n    \n- **Request Body Example**\n    \n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        { \"text\": \"Tell me an interesting fact about space.\" }\n      ]\n    }\n  ],\n  \"generationConfig\": {\n    \"temperature\": 0.8,\n    \"top_p\": 0.9,\n    \"top_k\": 50\n  }\n}\n\n ```\n\n- **Use Case:** Basic text-based interaction with Gemini.\n    \n\n## **🔧 Setup & Usage**\n\n### **1️⃣ Configuring Postman Environment**\n\nCreate a **Postman Environment** with the following variables:\n\n| Variable | Description | Example Value |\n| --- | --- | --- |\n| `base_url` | API base endpoint | `https://generativelanguage.googleapis.com/v1beta` |\n| `api_key` | Your Google API Key | `your_api_key` |\n| `model_name` | Gemini Model | `gemini-1.5-pro-latest` |\n\n---\n\n### **2️⃣ Running the Requests**\n\n1. **Select the Gemini Chat Collection** in Postman.\n    \n2. **Choose an API request** (e.g., _Start Chat_).\n    \n3. **Ensure your environment is active** (containing `base_url` and `api_key`).\n    \n4. **Click Send** to get a response.\n    \n\n---\n\n## **📖 Example Responses**\n\n### ✅ **Successful Response (200 OK)**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          { \"text\": \"Machine learning is a field of AI that enables systems to learn patterns from data.\" }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\n### ❌ **Error Responses**\n\n#### **400 - Bad Request**\n\n``` json\n{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n\n ```\n\n#### **401 - Unauthorized**\n\n``` json\n{\n  \"error\": {\n    \"code\": 401,\n    \"message\": \"Invalid API key. Please provide a valid API key.\",\n    \"status\": \"UNAUTHENTICATED\"\n  }\n}\n\n ```\n\n#### **403 - Permission Denied**\n\n``` json\n{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Permission denied. Ensure the API is enabled and the key has the correct permissions.\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n\n ```\n\n#### **429 - Rate Limit Exceeded**\n\n``` json\n{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded. Reduce request frequency or upgrade quota.\",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n\n ```\n\n#### **500 - Internal Server Error**\n\n``` json\n{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error occurred. Please try again later.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n\n ```\n\n---\n\n## **📖Test Script Explanation**\n\nThe API Responses are tested using the test script:\n\n``` javascript\npm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\npm.test(\"Response contains 'candidates'\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData).to.have.property(\"candidates\");\n    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\n});\npm.test(\"Response contains valid text output\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\n    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\n});\n\n ```\n\nThis script:\n\n- ✅ Ensures the API returns a **200 OK** response.\n    \n- ✅ Verifies the response contains a **'candidates'** array.\n    \n- ✅ Checks that the response text output is **valid and non-empty**.\n    \n\n---\n\n## **📌 Key Features & Use Cases**\n\n✅ **Conversational AI:** Build real-time chatbots.  \n✅ **Memory Retention:** Maintain chat context over multiple requests.  \n✅ **Customizable Responses:** Control tone, temperature, and randomness.\n\n## **📢 Conclusion**\n\nWith the **Gemini Chat API Postman Collection**, one can effortlessly interact with AI for **chat-based applications**, **AI-powered assistance**, and **customized conversations!**",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "37275786",
+    "_collection_link": "https://www.postman.com/satellite-explorer-78084950/geminiexplorr/collection/8jqv0h0/gemini-chat?action=share&source=collection_link&creator=37275786",
+    "lastUpdated": "2025-03-24T16:03:50.536Z"
+  },
+  "item": [
+    {
+      "name": "Start Chat",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains 'candidates'\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+              "    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains valid text output\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "models",
+            "{{model_name}}:generateContent"
+          ],
+          "query": [
+            {
+              "key": "key",
+              "value": "{{api_key}}"
+            }
+          ]
+        },
+        "description": "### **Start Chat**\n\n#### **📌 Purpose**\n\nThis endpoint starts a new chat session with the **Gemini** model.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | The user input message in structured text format. |\n\nThe Gemini AI model responds with a text response (Status Code `200`)✅\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure you provide a valid `contents` array. |\n| `401` | \"Invalid API key.\" | Check if your API key is correct and active. |\n| `403` | \"Permission denied.\" | Ensure your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce request frequency or upgrade quota. |\n| `500` | \"Internal Server Error\" | Retry after some time. If persistent, report to API support. |\n\n---\n\nThe **Examples** of Successful and Error Responses are added in the **Start Chat** Request example Sections.\n\n#### **Use Cases:**\n\n✅It can be useful when\n\nWhen you want to start a fresh conversation without any context from previous messages.  \nFor example,\n\n- Asking one-off questions where past interactions are not needed.\n    \n- Starting a new chatbot session."
+      },
+      "response": [
+        {
+          "name": "Start Chat 200",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        {
+          "name": "Start Chat 400",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+        },
+        {
+          "name": "Start Chat 401",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+        },
+        {
+          "name": "Start Chat 403",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+        },
+        {
+          "name": "Start Chat 500",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+        },
+        {
+          "name": "Start Chat 429",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
+        }
+      ]
+    },
+    {
+      "name": "Chat with History",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains 'candidates'\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+              "    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains valid text output\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "models",
+            "{{model_name}}:generateContent"
+          ],
+          "query": [
+            {
+              "key": "key",
+              "value": "{{api_key}}"
+            }
+          ]
+        },
+        "description": "### **Chat With History**\n\nThis request generates text replies using Google's Gemini API.\n\n- It accepts text prompts inside \"contents\".\n    \n- The API responds with generated text based on the prompt messages.\n    \n- It replies with a text based on the **previous conversation** (history) and the current message.\n    \n- \"model\" specify the model's responses and \"user\" denotes the messages by the user.\n    \n\n#### **📌 Purpose**\n\nThe Gemini API supports multi-turn conversations by allowing users to maintain a chat history. This enables Gemini to respond with **contextual awareness,** remembering previous interactions.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | Array containing the structured conversation history. Each entry has a `role` (either `user` or `model`) and a `parts` array containing the text messages. |\n\nThe Gemini AI model responds with a text response (Status Code `200`)✅, keeping in mind the previous conversations.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure you provide a valid `contents` array. |\n| `401` | \"Invalid API key.\" | Check if your API key is correct and active. |\n| `403` | \"Permission denied.\" | Ensure your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce request frequency or upgrade quota. |\n| `500` | \"Internal Server Error\" | Retry after some time. If persistent, report to API support. |\n\n---\n\nThe **Examples** of Successful and Error Responses are added in the **Chat With History** Request example Sections.\n\n#### ✅ **Use Cases:**\n\nIt can be useful when you want the AI to **remember previous messages** and **continue a conversation** with context.  \nFor example,\n\n- Long-form discussions\n    \n- Useful for AI chatbots requiring memory retention.\n    \n- Technical troubleshooting"
+      },
+      "response": [
+        {
+          "name": "Chat with History 200",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ],\r\n      \"role\": \"model\"\r\n    },\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"Sure! Here’s an example of a POST request using `curl`:\\n\\n```bash\\ncurl -X POST \\\"https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=YOUR_API_KEY\\\" \\\\\\n  -H \\\"Content-Type: application/json\\\" \\\\\\n  -d '{\\n    \\\"contents\\\": [\\n      { \\\"parts\\\": [{ \\\"text\\\": \\\"Hello, Gemini!\\\" }] }\\n    ]\\n  }'\\n```\\n\\nThis request sends a message to the Gemini API and retrieves a generated response. Let me know if you need more details!\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        {
+          "name": "Chat with History 400",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+        },
+        {
+          "name": "Chat with History 401",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+        },
+        {
+          "name": "Chat with History 403",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+        },
+        {
+          "name": "Chat with History 500",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+        },
+        {
+          "name": "Chat with History 429",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Hello! How can I use the Gemini API?\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"model\",\r\n      \"parts\": [\r\n        { \"text\": \"You can use the Gemini API by sending HTTP POST requests to the provided endpoints.\" }\r\n      ]\r\n    },\r\n    {\r\n      \"role\": \"user\",\r\n      \"parts\": [\r\n        { \"text\": \"Can you show me an example request?\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
+        }
+      ]
+    },
+    {
+      "name": "Chat with Parameters",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains 'candidates'\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+              "    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains valid text output\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "models",
+            "{{model_name}}:generateContent"
+          ],
+          "query": [
+            {
+              "key": "key",
+              "value": "{{api_key}}"
+            }
+          ]
+        },
+        "description": "### Chat With Parameters Restriction\n\n#### **📌 Purpose**\n\nThis request generates **chat replies** using Google's Gemini API.\n\n- It accepts a text prompt inside \"contents\".\n    \n- The API responds with generated text based on the prompt chat\n    \n- You can modify the response behavior using optional parameters (temperature, top_p, top_k).\n    \n\n#### **🔗 Request URL**\n\n```\n/models/:generateContent?key=<GOOGLE_API_KEY>\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📤 The Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `temperature` | Float | Controls randomness (0.0-1.0, default is 0.7). |\n| `top_p` | Float | Nucleus sampling parameter (0.0-1.0). |\n| `top_k` | Integer | Limits the token choices per step. |\n\n- **Parameters usage**:\n    \n    - **Temperature (0.0 - 1.0):** Controls randomness; lower values make responses precise, and higher values make them creative.\n        \n    - **top-p (0.0 - 1.0):** Limits token choices to a probability threshold, balancing focus and diversity.\n        \n    - **top-k (Integer):** Restricts choices to the top K probable words, affecting coherence and variety.\n        \n\n###### Recommended Settings: (One can adjust according to need)\n\n- **Precise & factual responses:** `temperature=0.2, top_p=0.3, top_k=10`\n    \n- **Balanced responses:** `temperature=0.6, top_p=0.8, top_k=20`\n    \n- **Creative & diverse responses:** `temperature=0.9, top_p=1.0, top_k=40`\n    \n\nThe Gemini AI model responds with a text response (Status Code `200`)✅, keeping in mind the parameters provided as input.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure you provide a valid `contents` array. |\n| `401` | \"Invalid API key.\" | Check if your API key is correct and active. |\n| `403` | \"Permission denied.\" | Ensure your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce request frequency or upgrade quota. |\n| `500` | \"Internal Server Error\" | Retry after some time. If persistent, report to API support. |\n\n**Examples** of successful and error responses are added to the **chat with parameters** request example sections.\n\n#### **Use Cases:**\n\n✅It can be useful when\n\nWhen you want to start a fresh conversation without any context from previous messages.  \nFor example,\n\n- Asking one-off questions where past interactions are not needed.\n    \n- Starting a new chatbot session."
+      },
+      "response": [
+        {
+          "name": "Chat with Parameters 200",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"Did you know that in space, metal surfaces can weld together without heat or melting? This phenomenon, called 'cold welding,' happens because there is no oxidized layer between the metals in a vacuum!\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        {
+          "name": "Chat with Parameters 400",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+        },
+        {
+          "name": "Chat with Parameters 401",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+        },
+        {
+          "name": "Chat with Parameters 403",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+        },
+        {
+          "name": "Chat with Parameters 500",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+        },
+        {
+          "name": "Chat with Parameters 429",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a fun fact about space.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.8,\r\n    \"top_p\": 0.7,\r\n    \"top_k\": 50\r\n  }\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
+        }
+      ]
+    }
+  ]
 }

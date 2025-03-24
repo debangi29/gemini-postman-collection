@@ -1,891 +1,892 @@
 {
-	"info": {
-		"_postman_id": "bae6c8d4-21a6-4a49-98b3-2ef850e52749",
-		"name": "Gemini Code Generation",
-		"description": "## **📌 Overview of the Gemini Chat Collection**\n\nThe **Gemini Code Generation API Collection** in Postman enables users to generate, explain, and optimize code using Google's **gemini-1.5-pro-latest** model. This collection provides endpoints for:\n\n- **Generating code from natural language descriptions**\n    \n- **Explaining existing code snippets**\n    \n- **Providing code improvement suggestions**\n    \n\n---\n\n## 📂 **Collection Structure**\n\n### **1\\. Code Improvement Suggestions**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}`\n    \n- **Description:** Analyzes and suggests optimizations for the given code.\n    \n- **Request Body Example:**\n    \n    ``` json\n                      {\n                        \"contents\": [\n                          {\n                            \"parts\": [\n                              {\n                                \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\n                              }\n                            ]\n                          }\n                        ]\n                      }\n    \n     ```\n    \n- **Use Case:** Improve the efficiency of a given code snippet.\n    \n\n---\n\n### **2\\. Code Explanation**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}`\n    \n- **Description:** Explains the functionality of a given code snippet.\n    \n- **Request Body Example:**\n    \n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Explain the following code:\\n\\n```python\\ndef fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\n        }\n      ]\n    }\n  ]\n}\n\n ```\n\n- **Use Case:** Helps developers understand complex or unfamiliar code.\n    \n\n---\n\n### **3\\. Generate Code from Description**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}`\n    \n- **Description:** Generates code based on a textual description.\n    \n- **Request Body Example:**\n    \n    ``` json\n      {\n      \"contents\": [\n        {\n          \"parts\": [\n            {\n              \"text\": \"Write a C++ function to reverse a linked list.\"\n            }\n          ]\n        }\n      ]\n      }\n    \n     ```\n    \n- **Use Case:** Useful for automating code generation from natural language prompts.\n    \n\n---\n\n## **🔧 Setup & Usage**\n\n### **1️⃣ Configuring Postman Environment**\n\nCreate a **Postman Environment** with the following variables:\n\n| Variable | Description | Example Value |\n| --- | --- | --- |\n| `base_url` | API base endpoint | `https://generativelanguage.googleapis.com/v1beta` |\n| `api_key` | Your Google API Key | `your_api_key` |\n| `model_name` | Gemini Model | `gemini-1.5-pro-latest` |\n\n---\n\n### **2️⃣ Running the Requests**\n\n1. **Select the Gemini Code Generation Collection** in Postman.\n    \n2. **Choose an API request** (e.g., _Code Explanation_).\n    \n3. **Ensure your environment is active** (containing `base_url` and `api_key`).\n    \n4. **Click Send** to get a response.\n    \n\n---\n\n## **📖 Example Responses**\n\n### ✅ **Successful Response (200 OK)**\n\nThe test scripts and request specific successful responses are added in respective requests documentation. (Can also be viewed by clicking `view complete documentation`\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          { \"text\": \"Your optimized Python sorting function is...\" }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\n### ❌ **Error Responses**\n\n#### **400 - Bad Request**\n\n``` json\n{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n\n ```\n\n#### **401 - Unauthorized**\n\n``` json\n{\n  \"error\": {\n    \"code\": 401,\n    \"message\": \"Invalid API key. Please provide a valid API key.\",\n    \"status\": \"UNAUTHENTICATED\"\n  }\n}\n\n ```\n\n#### **429 - Rate Limit Exceeded**\n\n``` json\n{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded. Reduce request frequency or upgrade quota.\",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n\n ```\n\n#### **500 - Internal Server Error**\n\n``` json\n{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error occurred. Please try again later.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n\n ```\n\n---\n\n## **📌 Key Features & Use Cases**\n\n✅ **Automated Code Generation:** Convert natural language descriptions into functional code.  \n✅ **Code Optimization:** Improve performance and readability of existing code.  \n✅ **Code Explanation:** Understand unfamiliar code through AI-generated explanations.\n\n## **📢 Conclusion**\n\nWith the **Gemini Code Generation API Postman Collection**, developers can streamline coding tasks by leveraging AI to generate, explain, and optimize code efficiently. 🚀",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "37275786",
-		"_collection_link": "https://www.postman.com/satellite-explorer-78084950/geminiexplorr/collection/kzu3aqp/gemini-code-generation?action=share&source=collection_link&creator=37275786"
-	},
-	"item": [
-		{
-			"name": "Code Improvement Suggestions",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains 'candidates'\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
-							"    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains an optimized code suggestion\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
-							"});\r",
-							"\r",
-							"// Check if the response suggests optimization (looks for relevant words)\r",
-							"pm.test(\"Response mentions optimization improvements\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    var responseText = jsonData.candidates[0].content.parts[0].text.toLowerCase();\r",
-							"\r",
-							"    var optimizationKeywords = [\"optimized\", \"better\", \"efficient\", \"improve\", \"faster\", \"time complexity\", \"O(n)\"];\r",
-							"    var containsOptimization = optimizationKeywords.some(keyword => responseText.includes(keyword));\r",
-							"\r",
-							"    pm.expect(containsOptimization).to.be.true;\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"models",
-						"{{model_name}}:generateContent"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{api_key}}"
-						}
-					]
-				},
-				"description": "### **📝 Code Improvement Suggestion Feature**\n\n#### **📌 Purpose**\n\nThe Gemini API can analyze and optimize code snippets, providing suggestions for improving efficiency and performance.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing a structured request asking for code optimization suggestions. |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\n        }\n      ]\n    }\n  ]\n}\n\n ```\n\n#### **✅ Example Success Response**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"Here’s an optimized version of your code using the built-in `sorted()` function:\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\narr.sort()\\nprint(arr)\\n```\\n\\nThis reduces the time complexity from O(n^2) to O(n log n) using Timsort.\"\n          }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\nThe Gemini AI model responds with a response (Status Code `200`)✅, which consist of an optimized approach of the code.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure you provide a valid `contents` array. |\n| `401` | \"Invalid API key.\" | Check if your API key is correct and active. |\n| `403` | \"Permission denied.\" | Ensure your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce request frequency or upgrade quota. |\n| `500` | \"Internal Server Error\" | Retry after some time. If persistent, report to API support. |\n\nThe **Examples** of Successful and Error Responses are added in the **Code Improvement Suggestion** Request example Sections.\n\n#### **✅ Test Script Explanation**\n\n- **Verify status code is 200** to ensure a successful request.\n    \n- **Check if the response contains** **`candidates`**, confirming that a valid result is returned.\n    \n- **Ensure the response includes an optimized code suggestion**, ensuring useful output.\n    \n- **Look for keywords indicating optimization** (e.g., \"optimized,\" \"efficient,\" \"faster\") to validate meaningful improvements.\n    \n\n#### **✅ Use Cases:**\n\nIt can be useful when you have a code in mind, but it is not the most optimized approach.  \nFor example,\n\n- To reduce the time and space complexity of a code.\n    \n- Generate the correct workflow of the code."
-			},
-			"response": [
-				{
-					"name": "Code Improvement Suggestions 200",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"Your current implementation uses a **nested loop** with a time complexity of **O(n²)**, which is inefficient for sorting. Instead, you can use Python's built-in `sorted()` function or an efficient sorting algorithm like `sort()`, which runs in **O(n log n)**. Here's an optimized version:\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\narr.sort()  # In-place sorting (Timsort, O(n log n))\\nprint(arr)\\n```\\n\\nAlternatively, if you need a non-modifying version:\\n\\n```python\\nsorted_arr = sorted(arr)  # Returns a new sorted list\\nprint(sorted_arr)\\n```\\n\\nThis significantly improves performance while keeping the code concise and readable.\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				{
-					"name": "Code Improvement Suggestions 400",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
-				},
-				{
-					"name": "Code Improvement Suggestions 401",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
-				},
-				{
-					"name": "Code Improvement Suggestions 403",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
-				},
-				{
-					"name": "Code Improvement Suggestions 500",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
-				},
-				{
-					"name": "Code Improvement Suggestions 429",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Too Many Requests",
-					"code": 429,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
-				}
-			]
-		},
-		{
-			"name": "Code Explanation",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains 'candidates'\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
-							"    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains an explanation\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
-							"});\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "https://67f74e35-8426-4df7-97fa-9dc4c73ad50d.mock.pstmn.io",
-					"protocol": "https",
-					"host": [
-						"67f74e35-8426-4df7-97fa-9dc4c73ad50d",
-						"mock",
-						"pstmn",
-						"io"
-					]
-				},
-				"description": "### **📝 Code Explanation Feature**\n\n#### **📌 Purpose**\n\nThe Gemini API can analyze code snippets and provide detailed explanations, helping users understand their functionality.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing a structured request asking for code explanation. |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\n        }\n      ]\n    }\n  ]\n}\n\n ```\n\n#### **✅ Example Success Response**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"This Python function implements the Fibonacci sequence using recursion. If `n` is 0 or 1, it returns `n`. Otherwise, it recursively calls itself for `n-1` and `n-2` and sums the results. However, this approach has exponential time complexity (O(2^n)) and can be optimized using memoization or iteration.\"\n          }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\nThe Gemini AI model responds with a response (Status Code `200`)✅, which consists of an explanation of the code provided.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure the `contents` array is correctly formatted. |\n| `401` | \"Invalid API key.\" | Verify that your API key is valid and active. |\n| `403` | \"Permission denied.\" | Check if your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce the request frequency or upgrade your quota. |\n| `500` | \"Internal Server Error\" | Retry after some time or report the issue to support. |\n\n---\n\nThe **Examples** of Successful and Error Responses are added in the **Code Explanation** Request example Sections.\n\n#### **✅ Test Script Explanation**\n\n- **Verify status code is 200** to ensure the request was successful.\n    \n- **Check if the response contains** **`candidates`**, confirming that an explanation was generated.\n    \n- **Ensure the response includes a valid explanation**, ensuring the text property is present and non-empty.\n    \n\n#### **✅ Use Cases:**\n\nIt can be useful when you want an explanation for understanding certain code.  \nFor example,\n\n- A code in some language unknown to you.\n    \n- A code that seems to be too complex to understand!"
-			},
-			"response": [
-				{
-					"name": "Code Explanation 200",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "https://67f74e35-8426-4df7-97fa-9dc4c73ad50d.mock.pstmn.io",
-							"protocol": "https",
-							"host": [
-								"67f74e35-8426-4df7-97fa-9dc4c73ad50d",
-								"mock",
-								"pstmn",
-								"io"
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\"text\": \"This Python function `fibonacci(n)` calculates the nth Fibonacci number using recursion.  ### **Explanation:**- The function checks if `n` is **0 or 1**. If so, it returns `n` (base case).  - Otherwise, it **recursively** calls itself for `n-1` and `n-2`, summing their results.  - This follows the **Fibonacci sequence**, where each number is the sum of the two preceding ones.  ### **Example Execution:**```fibonacci(5)-> fibonacci(4) + fibonacci(3)-> (fibonacci(3) + fibonacci(2)) + (fibonacci(2) + fibonacci(1))-> ((fibonacci(2) + fibonacci(1)) + fibonacci(2)) + (fibonacci(2) + 1)-> ((1 + 1) + 1) + (1 + 1)-> 5```\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				{
-					"name": "Code Explanation 400",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
-				},
-				{
-					"name": "Code Explanation 401",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
-				},
-				{
-					"name": "Code Explanation 403",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
-				},
-				{
-					"name": "Code Explanation 500",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
-				},
-				{
-					"name": "Code Explanation 429",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Too Many Requests",
-					"code": 429,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
-				}
-			]
-		},
-		{
-			"name": "Generate Code from Description",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains 'candidates'\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
-							"    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains generated code\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
-							"    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
-							"});\r",
-							"\r",
-							"pm.test(\"Response contains valid code syntax\", function () {\r",
-							"    var jsonData = pm.response.json();\r",
-							"    var generatedCode = jsonData.candidates[0].content.parts[0].text;\r",
-							"    var validKeywords = [\"def\", \"class\", \"import\", \"function\", \"#\", \"{\", \"public\", \"void\", \"let\", \"const\"];\r",
-							"\r",
-							"    var containsValidSyntax = validKeywords.some(keyword => generatedCode.includes(keyword));\r",
-							"    pm.expect(containsValidSyntax).to.be.true;\r",
-							"});\r",
-							"\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"models",
-						"{{model_name}}:generateContent"
-					],
-					"query": [
-						{
-							"key": "key",
-							"value": "{{api_key}}"
-						}
-					]
-				},
-				"description": "### **📝 Code Generation Feature**\n\n#### **📌 Purpose**\n\nThe Gemini API can generate code snippets from a natural language description, assisting users in code implementation.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing a structured request asking for code generation. |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Write a C++ function to reverse a linked list.\"\n        }\n      ]\n    }\n  ]\n}\n\n ```\n\n#### **✅ Example Success Response**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"```cpp\\nstruct Node {\\n    int data;\\n    Node* next;\\n};\\n\\nNode* reverseList(Node* head) {\\n    Node* prev = nullptr;\\n    Node* curr = head;\\n    while (curr) {\\n        Node* next = curr->next;\\n        curr->next = prev;\\n        prev = curr;\\n        curr = next;\\n    }\\n    return prev;\\n}\\n```\"\n          }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\nThe Gemini AI model responds with a response (Status Code `200`)✅, which consists of code to the question asked. It also provides the citation sources to refer to.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure the `contents` array is correctly formatted. |\n| `401` | \"Invalid API key.\" | Verify that your API key is valid and active. |\n| `403` | \"Permission denied.\" | Check if your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce the request frequency or upgrade your quota. |\n| `500` | \"Internal Server Error\" | Retry after some time or report the issue to support. |\n\n---\n\nThe **Examples** of Successful and Error Responses are added in the **Code Genaration Feature** Request example Sections.\n\n#### **✅ Test Script Explanation**\n\n- **Verify status code is 200** to confirm the request was successful.\n    \n- **Check if the response contains** **`candidates`**, ensuring that generated code is returned.\n    \n- **Ensure the response includes a valid code snippet**, verifying that text is present and non-empty.\n    \n- **Check if the response starts with common programming keywords**, ensuring the generated content is likely valid code.\n    \n\n#### **✅ Use Cases:**\n\nIt can be useful when you want a code to a certain problem.  \nFor example,\n\n- A code in some language unknown to you.\n    \n- A code that seems to be too complex to write!"
-			},
-			"response": [
-				{
-					"name": "Generate Code from Description 200",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"#include <iostream>\\n\\nusing namespace std;\\n\\nstruct Node {\\n    int data;\\n    Node* next;\\n};\\n\\nNode* reverseList(Node* head) {\\n    Node* prev = nullptr;\\n    Node* current = head;\\n    Node* next = nullptr;\\n\\n    while (current != nullptr) {\\n        next = current->next;\\n        current->next = prev;\\n        prev = current;\\n        current = next;\\n    }\\n    return prev;\\n}\\n\\nvoid printList(Node* head) {\\n    while (head) {\\n        cout << head->data << \\\" -> \\\";\\n        head = head->next;\\n    }\\n    cout << \\\"NULL\\\\n\\\";\\n}\\n\\nint main() {\\n    Node* head = new Node{1, new Node{2, new Node{3, new Node{4, nullptr}}}};\\n    cout << \\\"Original List: \\\";\\n    printList(head);\\n    head = reverseList(head);\\n    cout << \\\"Reversed List: \\\";\\n    printList(head);\\n    return 0;\\n}\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
-				},
-				{
-					"name": "Generate Code from Description 400",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Bad Request",
-					"code": 400,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
-				},
-				{
-					"name": "Generate Code from Description 401",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Unauthorized",
-					"code": 401,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
-				},
-				{
-					"name": "Generate Code from Description 403",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Forbidden",
-					"code": 403,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
-				},
-				{
-					"name": "Generate Code from Description 500",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Internal Server Error",
-					"code": 500,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
-				},
-				{
-					"name": "Generate Code from Description 429",
-					"originalRequest": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"models",
-								"{{model_name}}:generateContent"
-							],
-							"query": [
-								{
-									"key": "key",
-									"value": "{{api_key}}"
-								}
-							]
-						}
-					},
-					"status": "Too Many Requests",
-					"code": 429,
-					"_postman_previewlanguage": null,
-					"header": null,
-					"cookie": [],
-					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
-				}
-			]
-		}
-	]
+  "info": {
+    "_postman_id": "bae6c8d4-21a6-4a49-98b3-2ef850e52749",
+    "name": "Gemini Code Generation",
+    "description": "## **📌 Overview of the Gemini Chat Collection**\n\nThe **Gemini Code Generation API Collection** in Postman enables users to generate, explain, and optimize code using Google's **gemini-1.5-pro-latest** model. This collection provides endpoints for:\n\n- **Generating code from natural language descriptions**\n    \n- **Explaining existing code snippets**\n    \n- **Providing code improvement suggestions**\n    \n\n---\n\n## 📂 **Collection Structure**\n\n### **1\\. Code Improvement Suggestions**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}`\n    \n- **Description:** Analyzes and suggests optimizations for the given code.\n    \n- **Request Body Example:**\n    \n    ``` json\n                      {\n                        \"contents\": [\n                          {\n                            \"parts\": [\n                              {\n                                \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\n                              }\n                            ]\n                          }\n                        ]\n                      }\n    \n     ```\n    \n- **Use Case:** Improve the efficiency of a given code snippet.\n    \n\n---\n\n### **2\\. Code Explanation**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}`\n    \n- **Description:** Explains the functionality of a given code snippet.\n    \n- **Request Body Example:**\n    \n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Explain the following code:\\n\\n```python\\ndef fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\n        }\n      ]\n    }\n  ]\n}\n\n ```\n\n- **Use Case:** Helps developers understand complex or unfamiliar code.\n    \n\n---\n\n### **3\\. Generate Code from Description**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}`\n    \n- **Description:** Generates code based on a textual description.\n    \n- **Request Body Example:**\n    \n    ``` json\n      {\n      \"contents\": [\n        {\n          \"parts\": [\n            {\n              \"text\": \"Write a C++ function to reverse a linked list.\"\n            }\n          ]\n        }\n      ]\n      }\n    \n     ```\n    \n- **Use Case:** Useful for automating code generation from natural language prompts.\n    \n\n---\n\n## **🔧 Setup & Usage**\n\n### **1️⃣ Configuring Postman Environment**\n\nCreate a **Postman Environment** with the following variables:\n\n| Variable | Description | Example Value |\n| --- | --- | --- |\n| `base_url` | API base endpoint | `https://generativelanguage.googleapis.com/v1beta` |\n| `api_key` | Your Google API Key | `your_api_key` |\n| `model_name` | Gemini Model | `gemini-1.5-pro-latest` |\n\n---\n\n### **2️⃣ Running the Requests**\n\n1. **Select the Gemini Code Generation Collection** in Postman.\n    \n2. **Choose an API request** (e.g., _Code Explanation_).\n    \n3. **Ensure your environment is active** (containing `base_url` and `api_key`).\n    \n4. **Click Send** to get a response.\n    \n\n---\n\n## **📖 Example Responses**\n\n### ✅ **Successful Response (200 OK)**\n\nThe test scripts and request specific successful responses are added in respective requests documentation. (Can also be viewed by clicking `view complete documentation`\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          { \"text\": \"Your optimized Python sorting function is...\" }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\n### ❌ **Error Responses**\n\n#### **400 - Bad Request**\n\n``` json\n{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n\n ```\n\n#### **401 - Unauthorized**\n\n``` json\n{\n  \"error\": {\n    \"code\": 401,\n    \"message\": \"Invalid API key. Please provide a valid API key.\",\n    \"status\": \"UNAUTHENTICATED\"\n  }\n}\n\n ```\n\n#### **429 - Rate Limit Exceeded**\n\n``` json\n{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded. Reduce request frequency or upgrade quota.\",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n\n ```\n\n#### **500 - Internal Server Error**\n\n``` json\n{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error occurred. Please try again later.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n\n ```\n\n---\n\n## **📌 Key Features & Use Cases**\n\n✅ **Automated Code Generation:** Convert natural language descriptions into functional code.  \n✅ **Code Optimization:** Improve performance and readability of existing code.  \n✅ **Code Explanation:** Understand unfamiliar code through AI-generated explanations.\n\n## **📢 Conclusion**\n\nWith the **Gemini Code Generation API Postman Collection**, developers can streamline coding tasks by leveraging AI to generate, explain, and optimize code efficiently. 🚀",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "37275786",
+    "_collection_link": "https://www.postman.com/satellite-explorer-78084950/geminiexplorr/collection/kzu3aqp/gemini-code-generation?action=share&source=collection_link&creator=37275786",
+    "lastUpdated": "2025-03-24T16:03:50.538Z"
+  },
+  "item": [
+    {
+      "name": "Code Improvement Suggestions",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains 'candidates'\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+              "    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains an optimized code suggestion\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
+              "});\r",
+              "\r",
+              "// Check if the response suggests optimization (looks for relevant words)\r",
+              "pm.test(\"Response mentions optimization improvements\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    var responseText = jsonData.candidates[0].content.parts[0].text.toLowerCase();\r",
+              "\r",
+              "    var optimizationKeywords = [\"optimized\", \"better\", \"efficient\", \"improve\", \"faster\", \"time complexity\", \"O(n)\"];\r",
+              "    var containsOptimization = optimizationKeywords.some(keyword => responseText.includes(keyword));\r",
+              "\r",
+              "    pm.expect(containsOptimization).to.be.true;\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "models",
+            "{{model_name}}:generateContent"
+          ],
+          "query": [
+            {
+              "key": "key",
+              "value": "{{api_key}}"
+            }
+          ]
+        },
+        "description": "### **📝 Code Improvement Suggestion Feature**\n\n#### **📌 Purpose**\n\nThe Gemini API can analyze and optimize code snippets, providing suggestions for improving efficiency and performance.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing a structured request asking for code optimization suggestions. |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\n        }\n      ]\n    }\n  ]\n}\n\n ```\n\n#### **✅ Example Success Response**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"Here’s an optimized version of your code using the built-in `sorted()` function:\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\narr.sort()\\nprint(arr)\\n```\\n\\nThis reduces the time complexity from O(n^2) to O(n log n) using Timsort.\"\n          }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\nThe Gemini AI model responds with a response (Status Code `200`)✅, which consist of an optimized approach of the code.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure you provide a valid `contents` array. |\n| `401` | \"Invalid API key.\" | Check if your API key is correct and active. |\n| `403` | \"Permission denied.\" | Ensure your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce request frequency or upgrade quota. |\n| `500` | \"Internal Server Error\" | Retry after some time. If persistent, report to API support. |\n\nThe **Examples** of Successful and Error Responses are added in the **Code Improvement Suggestion** Request example Sections.\n\n#### **✅ Test Script Explanation**\n\n- **Verify status code is 200** to ensure a successful request.\n    \n- **Check if the response contains** **`candidates`**, confirming that a valid result is returned.\n    \n- **Ensure the response includes an optimized code suggestion**, ensuring useful output.\n    \n- **Look for keywords indicating optimization** (e.g., \"optimized,\" \"efficient,\" \"faster\") to validate meaningful improvements.\n    \n\n#### **✅ Use Cases:**\n\nIt can be useful when you have a code in mind, but it is not the most optimized approach.  \nFor example,\n\n- To reduce the time and space complexity of a code.\n    \n- Generate the correct workflow of the code."
+      },
+      "response": [
+        {
+          "name": "Code Improvement Suggestions 200",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"Your current implementation uses a **nested loop** with a time complexity of **O(n²)**, which is inefficient for sorting. Instead, you can use Python's built-in `sorted()` function or an efficient sorting algorithm like `sort()`, which runs in **O(n log n)**. Here's an optimized version:\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\narr.sort()  # In-place sorting (Timsort, O(n log n))\\nprint(arr)\\n```\\n\\nAlternatively, if you need a non-modifying version:\\n\\n```python\\nsorted_arr = sorted(arr)  # Returns a new sorted list\\nprint(sorted_arr)\\n```\\n\\nThis significantly improves performance while keeping the code concise and readable.\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        {
+          "name": "Code Improvement Suggestions 400",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+        },
+        {
+          "name": "Code Improvement Suggestions 401",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+        },
+        {
+          "name": "Code Improvement Suggestions 403",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+        },
+        {
+          "name": "Code Improvement Suggestions 500",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+        },
+        {
+          "name": "Code Improvement Suggestions 429",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"How can I optimize this Python code?\\n\\n```python\\narr = [5, 2, 8, 1, 3]\\nfor i in range(len(arr)):\\n    for j in range(i+1, len(arr)):\\n        if arr[i] > arr[j]:\\n            arr[i], arr[j] = arr[j], arr[i]\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
+        }
+      ]
+    },
+    {
+      "name": "Code Explanation",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains 'candidates'\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+              "    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains an explanation\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://67f74e35-8426-4df7-97fa-9dc4c73ad50d.mock.pstmn.io",
+          "protocol": "https",
+          "host": [
+            "67f74e35-8426-4df7-97fa-9dc4c73ad50d",
+            "mock",
+            "pstmn",
+            "io"
+          ]
+        },
+        "description": "### **📝 Code Explanation Feature**\n\n#### **📌 Purpose**\n\nThe Gemini API can analyze code snippets and provide detailed explanations, helping users understand their functionality.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing a structured request asking for code explanation. |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\n        }\n      ]\n    }\n  ]\n}\n\n ```\n\n#### **✅ Example Success Response**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"This Python function implements the Fibonacci sequence using recursion. If `n` is 0 or 1, it returns `n`. Otherwise, it recursively calls itself for `n-1` and `n-2` and sums the results. However, this approach has exponential time complexity (O(2^n)) and can be optimized using memoization or iteration.\"\n          }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\nThe Gemini AI model responds with a response (Status Code `200`)✅, which consists of an explanation of the code provided.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure the `contents` array is correctly formatted. |\n| `401` | \"Invalid API key.\" | Verify that your API key is valid and active. |\n| `403` | \"Permission denied.\" | Check if your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce the request frequency or upgrade your quota. |\n| `500` | \"Internal Server Error\" | Retry after some time or report the issue to support. |\n\n---\n\nThe **Examples** of Successful and Error Responses are added in the **Code Explanation** Request example Sections.\n\n#### **✅ Test Script Explanation**\n\n- **Verify status code is 200** to ensure the request was successful.\n    \n- **Check if the response contains** **`candidates`**, confirming that an explanation was generated.\n    \n- **Ensure the response includes a valid explanation**, ensuring the text property is present and non-empty.\n    \n\n#### **✅ Use Cases:**\n\nIt can be useful when you want an explanation for understanding certain code.  \nFor example,\n\n- A code in some language unknown to you.\n    \n- A code that seems to be too complex to understand!"
+      },
+      "response": [
+        {
+          "name": "Code Explanation 200",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://67f74e35-8426-4df7-97fa-9dc4c73ad50d.mock.pstmn.io",
+              "protocol": "https",
+              "host": [
+                "67f74e35-8426-4df7-97fa-9dc4c73ad50d",
+                "mock",
+                "pstmn",
+                "io"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\"text\": \"This Python function `fibonacci(n)` calculates the nth Fibonacci number using recursion.  ### **Explanation:**- The function checks if `n` is **0 or 1**. If so, it returns `n` (base case).  - Otherwise, it **recursively** calls itself for `n-1` and `n-2`, summing their results.  - This follows the **Fibonacci sequence**, where each number is the sum of the two preceding ones.  ### **Example Execution:**```fibonacci(5)-> fibonacci(4) + fibonacci(3)-> (fibonacci(3) + fibonacci(2)) + (fibonacci(2) + fibonacci(1))-> ((fibonacci(2) + fibonacci(1)) + fibonacci(2)) + (fibonacci(2) + 1)-> ((1 + 1) + 1) + (1 + 1)-> 5```\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        {
+          "name": "Code Explanation 400",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+        },
+        {
+          "name": "Code Explanation 401",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+        },
+        {
+          "name": "Code Explanation 403",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+        },
+        {
+          "name": "Code Explanation 500",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+        },
+        {
+          "name": "Code Explanation 429",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        {\r\n          \"text\": \"Explain the following code:\\n\\n```python\\n def fibonacci(n):\\n    if n <= 1:\\n        return n\\n    return fibonacci(n-1) + fibonacci(n-2)\\n```\"\r\n        }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
+        }
+      ]
+    },
+    {
+      "name": "Generate Code from Description",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains 'candidates'\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+              "    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains generated code\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
+              "    pm.expect(jsonData.candidates[0].content.parts[0].text.length).to.be.greaterThan(0);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Response contains valid code syntax\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    var generatedCode = jsonData.candidates[0].content.parts[0].text;\r",
+              "    var validKeywords = [\"def\", \"class\", \"import\", \"function\", \"#\", \"{\", \"public\", \"void\", \"let\", \"const\"];\r",
+              "\r",
+              "    var containsValidSyntax = validKeywords.some(keyword => generatedCode.includes(keyword));\r",
+              "    pm.expect(containsValidSyntax).to.be.true;\r",
+              "});\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "models",
+            "{{model_name}}:generateContent"
+          ],
+          "query": [
+            {
+              "key": "key",
+              "value": "{{api_key}}"
+            }
+          ]
+        },
+        "description": "### **📝 Code Generation Feature**\n\n#### **📌 Purpose**\n\nThe Gemini API can generate code snippets from a natural language description, assisting users in code implementation.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing a structured request asking for code generation. |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        {\n          \"text\": \"Write a C++ function to reverse a linked list.\"\n        }\n      ]\n    }\n  ]\n}\n\n ```\n\n#### **✅ Example Success Response**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          {\n            \"text\": \"```cpp\\nstruct Node {\\n    int data;\\n    Node* next;\\n};\\n\\nNode* reverseList(Node* head) {\\n    Node* prev = nullptr;\\n    Node* curr = head;\\n    while (curr) {\\n        Node* next = curr->next;\\n        curr->next = prev;\\n        prev = curr;\\n        curr = next;\\n    }\\n    return prev;\\n}\\n```\"\n          }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\nThe Gemini AI model responds with a response (Status Code `200`)✅, which consists of code to the question asked. It also provides the citation sources to refer to.\n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure the `contents` array is correctly formatted. |\n| `401` | \"Invalid API key.\" | Verify that your API key is valid and active. |\n| `403` | \"Permission denied.\" | Check if your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce the request frequency or upgrade your quota. |\n| `500` | \"Internal Server Error\" | Retry after some time or report the issue to support. |\n\n---\n\nThe **Examples** of Successful and Error Responses are added in the **Code Genaration Feature** Request example Sections.\n\n#### **✅ Test Script Explanation**\n\n- **Verify status code is 200** to confirm the request was successful.\n    \n- **Check if the response contains** **`candidates`**, ensuring that generated code is returned.\n    \n- **Ensure the response includes a valid code snippet**, verifying that text is present and non-empty.\n    \n- **Check if the response starts with common programming keywords**, ensuring the generated content is likely valid code.\n    \n\n#### **✅ Use Cases:**\n\nIt can be useful when you want a code to a certain problem.  \nFor example,\n\n- A code in some language unknown to you.\n    \n- A code that seems to be too complex to write!"
+      },
+      "response": [
+        {
+          "name": "Generate Code from Description 200",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"#include <iostream>\\n\\nusing namespace std;\\n\\nstruct Node {\\n    int data;\\n    Node* next;\\n};\\n\\nNode* reverseList(Node* head) {\\n    Node* prev = nullptr;\\n    Node* current = head;\\n    Node* next = nullptr;\\n\\n    while (current != nullptr) {\\n        next = current->next;\\n        current->next = prev;\\n        prev = current;\\n        current = next;\\n    }\\n    return prev;\\n}\\n\\nvoid printList(Node* head) {\\n    while (head) {\\n        cout << head->data << \\\" -> \\\";\\n        head = head->next;\\n    }\\n    cout << \\\"NULL\\\\n\\\";\\n}\\n\\nint main() {\\n    Node* head = new Node{1, new Node{2, new Node{3, new Node{4, nullptr}}}};\\n    cout << \\\"Original List: \\\";\\n    printList(head);\\n    head = reverseList(head);\\n    cout << \\\"Reversed List: \\\";\\n    printList(head);\\n    return 0;\\n}\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+        },
+        {
+          "name": "Generate Code from Description 400",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Bad Request",
+          "code": 400,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+        },
+        {
+          "name": "Generate Code from Description 401",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Unauthorized",
+          "code": 401,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+        },
+        {
+          "name": "Generate Code from Description 403",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Forbidden",
+          "code": 403,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+        },
+        {
+          "name": "Generate Code from Description 500",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Internal Server Error",
+          "code": 500,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+        },
+        {
+          "name": "Generate Code from Description 429",
+          "originalRequest": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a C++ function to reverse a linked list.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "models",
+                "{{model_name}}:generateContent"
+              ],
+              "query": [
+                {
+                  "key": "key",
+                  "value": "{{api_key}}"
+                }
+              ]
+            }
+          },
+          "status": "Too Many Requests",
+          "code": 429,
+          "_postman_previewlanguage": null,
+          "header": null,
+          "cookie": [],
+          "body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t"
+        }
+      ]
+    }
+  ]
 }
