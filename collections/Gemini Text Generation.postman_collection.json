@@ -1,0 +1,867 @@
+{
+	"info": {
+		"_postman_id": "139e8bc8-0dd2-4e04-a3cf-58280326b635",
+		"name": "Gemini Text Generation",
+		"description": "## **Gemini Text Generation API**\n\n### 📌 **Overview**\n\nThe **Gemini Text Generation API Collection** in Postman enables users to generate AI-powered text responses using the **gemini-2.0-flash-exp** model. This API supports:\n\n- **Generating structured text responses with parameters**\n    \n- **Creating basic text outputs**\n    \n- **Applying safety filters to generated content**\n    \n\n---\n\n## 📂 **Collection Structure**\n\n### **1\\. Text with Parameters**\n\n- **Method:** `POST`\n    \n- **Endpoint:** `{{base_url}}/models/{{model_name_text_gen}}:generateContent?key={{api_key}}`\n    \n- **Description:** Generates text while allowing customization of parameters.\n    \n- **Request Body Example:**\n    \n    ``` json\n            {\n              \"contents\": [\n                { \"parts\": [ { \"text\": \"Write a poem about space exploration.\" } ] }\n              ],\n              \"generationConfig\": {\n                \"temperature\": 0.7,\n                \"top_p\": 0.9,\n                \"top_k\": 40\n              }\n            }\n    \n     ```\n    \n- **Use Case:** Produces creative text output while fine-tuning randomness and diversity.\n    \n\n---\n\n### **2\\. Basic Text Generation**\n\n- **Method:** `POST`\n    \n- **Description:** Generates text without any additional configuration.\n    \n- **Request Body Example:**\n    \n    ``` json\n            {\n              \"contents\": [\n                {\n                  \"parts\": [\n                    { \"text\": \"Write a short story about technology in 2050.\" }\n                  ]\n                }\n              ]\n            }\n    \n     ```\n    \n- **Use Case:** Simple, straightforward text generation with default settings.\n    \n\n---\n\n### **3\\. Text with Safety Filters**\n\n- **Method:** `POST`\n    \n- **Description:** Applies safety settings to filter potentially harmful content.\n    \n- **Request Body Example:**\n    \n    ``` json\n            {\n              \"contents\": [\n                {\n                  \"parts\": [\n                    { \"text\": \"Tell me a joke about AI.\" }\n                  ]\n                }\n              ],\n              \"safetySettings\": [\n                {\n                  \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\n                  \"threshold\": \"BLOCK_ONLY_HIGH\"\n                },\n                {\n                  \"category\": \"HARM_CATEGORY_HARASSMENT\",\n                  \"threshold\": \"BLOCK_MEDIUM_AND_ABOVE\"\n                }\n              ]\n            }\n    \n     ```\n    \n- **Use Case:** Ensures safe and appropriate text generation by filtering out harmful content.\n    \n\n---\n\n## **🔧 Setup & Usage**\n\n### **1️⃣ Configuring Postman Environment**\n\nCreate a **Postman Environment** with the following variables:\n\n| Variable | Description | Example Value |\n| --- | --- | --- |\n| `base_url` | API base endpoint | `https://generativelanguage.googleapis.com/v1beta` |\n| `api_key` | Your Google API Key | `your_api_key` |\n| `model_name_text_gen` | Gemini Text Generation Model | `gemini-2.0-flash-exp` |\n\n---\n\n### **2️⃣ Running the Requests**\n\n1. **Select the Gemini Text Generation Collection** in Postman.\n    \n2. **Choose an API request** (_Text with Parameters_, _Basic Text_, or _Text with Safety_).\n    \n3. **Ensure your environment is active** (containing `base_url` and `api_key`).\n    \n4. **Click Send** to generate AI text responses.\n    \n\n---\n\n## **📖 Example Responses**\n\n### ✅ **Successful Response (200 OK)**\n\n``` json\n{\n  \"candidates\": [\n    {\n      \"content\": {\n        \"parts\": [\n          { \"text\": \"Space exploration has long inspired humanity, taking us beyond the stars...\" }\n        ]\n      }\n    }\n  ]\n}\n\n ```\n\n### ❌ **Error Responses**\n\n#### **400 - Bad Request**\n\n``` json\n{\n  \"error\": {\n    \"code\": 400,\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\n    \"status\": \"INVALID_ARGUMENT\"\n  }\n}\n\n ```\n\n#### **401 - Unauthorized**\n\n``` json\n{\n  \"error\": {\n    \"code\": 401,\n    \"message\": \"Invalid API key. Please provide a valid API key.\",\n    \"status\": \"UNAUTHENTICATED\"\n  }\n}\n\n ```\n\n#### **429 - Rate Limit Exceeded**\n\n``` json\n{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"Quota exceeded. Reduce request frequency or upgrade quota.\",\n    \"status\": \"RESOURCE_EXHAUSTED\"\n  }\n}\n\n ```\n\n#### **500 - Internal Server Error**\n\n``` json\n{\n  \"error\": {\n    \"code\": 500,\n    \"message\": \"An internal error occurred. Please try again later.\",\n    \"status\": \"INTERNAL\"\n  }\n}\n\n ```\n\n---\n\n## **🛠 Test Script Explanation**\n\nThe API responses are validated using the following Postman test script:\n\n``` javascript\npm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\npm.test(\"Response contains 'candidates'\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData).to.have.property(\"candidates\");\n    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\n});\npm.test(\"Response contains text output\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\n});\n\n ```\n\nThis script:\n\n- ✅ Ensures the API returns a **200 OK** response.\n    \n- ✅ Checks that the response includes **candidates**.\n    \n- ✅ Verifies that the response contains a **valid text output**.\n    \n\n---\n\n## **📌 Key Features & Use Cases**\n\n✅ **Customizable Text Generation:** Fine-tune AI responses with parameters.  \n✅ **Basic AI Text Output:** Generate text without extra configurations.  \n✅ **Safety Filters:** Ensure AI-generated content is appropriate and free from harmful speech.\n\n## **📢 Conclusion**\n\nWith the **Gemini Text Generation API Postman Collection**, users can create structured, safe, and customized AI-generated text for various applications, including creative writing, chatbot responses, and safe conversational AI.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "37275786",
+		"_collection_link": "https://www.postman.com/satellite-explorer-78084950/geminiexplorr/collection/l4wfmai/gemini-text-generation?action=share&source=collection_link&creator=37275786"
+	},
+	"item": [
+		{
+			"name": "Text with Parameters",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains 'candidates'\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+							"    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains text output\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contents\": [{ \"parts\": [{ \"text\": \"Write some lines about our earth.\" }] }],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.7,\r\n    \"top_p\": 0.9,\r\n    \"top_k\": 40\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"models",
+						"{{model_name}}:generateContent"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{api_key}}"
+						}
+					]
+				},
+				"description": "### **📝 Gemini Text Generation with Parameters**\n\n#### **📌 Purpose**\n\nThe Gemini API can generate **custom text content** with adjustable parameters to control creativity and coherence. This feature is useful for **creative writing, research assistance, and AI-generated storytelling**.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing the text prompt for content generation. |\n| `generationConfig` | Object | Adjusts model creativity using parameters like `temperature`, `top_p`, and `top_k`. |\n\n**Parameters usage**:\n\n- **Temperature (0.0 - 1.0):** Controls randomness; lower values make responses precise, and higher values make them creative.\n    \n- **top-p (0.0 - 1.0):** Limits token choices to a probability threshold, balancing focus and diversity.\n    \n- **top-k (Integer):** Restricts choices to the top K probable words, affecting coherence and variety.\n    \n\n###### Recommended Settings: (One can adjust according to need)\n\n- **Precise & factual responses:** `temperature=0.2, top_p=0.3, top_k=10`\n    \n- **Balanced responses:** `temperature=0.6, top_p=0.8, top_k=20`\n    \n- **Creative & diverse responses:** `temperature=0.9, top_p=1.0, top_k=40`\n    \n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [{ \"parts\": [{ \"text\": \"Write a poem about space exploration.\" }] }],\n  \"generationConfig\": {\n    \"temperature\": 0.7,\n    \"top_p\": 0.9,\n    \"top_k\": 40\n  }\n}\n\n ```\n\n#### **✅ Expected Response (status 200)**\n\n- A generated text based on the prompt.\n    \n- Controlled creativity using adjustable parameters.\n    \n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure the `contents` array is correctly formatted. |\n| `401` | \"Invalid API key.\" | Verify that your API key is valid and active. |\n| `403` | \"Permission denied.\" | Check if your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce the request frequency or upgrade your quota. |\n| `500` | \"Internal Server Error\" | Retry after some time or report the issue to support. |\n\nThe **Examples** of Successful and Error Responses are added in the **Text generation with parameters** request example Sections.\n\n#### **📌 How to Use**\n\n1. **Define a prompt** for text generation.\n    \n2. **Adjust generation parameters** to control output creativity.\n    \n3. **Send a POST request** to the Gemini API.\n    \n4. **Receive the generated content** with fine-tuned control.\n    \n\n✅Use Cases:\n\nThis feature is useful for **writers, educators, and AI research applications**."
+			},
+			"response": [
+				{
+					"name": "Text with Parameters 200",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [{ \"parts\": [{ \"text\": \"Write some lines about space exploration.\" }] }],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.7,\r\n    \"top_p\": 0.9,\r\n    \"top_k\": 40\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}} ",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}} "
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\"text\": \"Space exploration is humanity's quest to understand the cosmos, pushing the boundaries of science and technology. From landing on the Moon to exploring distant planets and galaxies, it fuels innovation, inspires curiosity, and expands our knowledge of the universe. With advancements in robotics, AI, and interstellar research, the dream of deep space travel and extraterrestrial colonization inches closer to reality.\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+				},
+				{
+					"name": "Text with Parameters 400",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [{ \"parts\": [{ \"text\": \"Write a poem about space exploration.\" }] }],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.7,\r\n    \"top_p\": 0.9,\r\n    \"top_k\": 40\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+				},
+				{
+					"name": "Text with Parameters 401",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [{ \"parts\": [{ \"text\": \"Write a poem about space exploration.\" }] }],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.7,\r\n    \"top_p\": 0.9,\r\n    \"top_k\": 40\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+				},
+				{
+					"name": "Text with Parameters 403",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [{ \"parts\": [{ \"text\": \"Write a poem about space exploration.\" }] }],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.7,\r\n    \"top_p\": 0.9,\r\n    \"top_k\": 40\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+				},
+				{
+					"name": "Text with Parameters 500",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [{ \"parts\": [{ \"text\": \"Write a poem about space exploration.\" }] }],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.7,\r\n    \"top_p\": 0.9,\r\n    \"top_k\": 40\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+				},
+				{
+					"name": "Text with Parameters 429",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [{ \"parts\": [{ \"text\": \"Write a poem about space exploration.\" }] }],\r\n  \"generationConfig\": {\r\n    \"temperature\": 0.7,\r\n    \"top_p\": 0.9,\r\n    \"top_k\": 40\r\n  }\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Too Many Requests",
+					"code": 429,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t\r\n"
+				}
+			]
+		},
+		{
+			"name": "Basic Text",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains 'candidates'\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+							"    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains text output\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a short story about technology in 2050.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://67f74e35-8426-4df7-97fa-9dc4c73ad50d.mock.pstmn.io",
+					"protocol": "https",
+					"host": [
+						"67f74e35-8426-4df7-97fa-9dc4c73ad50d",
+						"mock",
+						"pstmn",
+						"io"
+					]
+				},
+				"description": "### **📝 Gemini Basic Text Generation**\n\n#### **📌 Purpose**\n\nThe Gemini API can generate **human-like text** based on a given prompt. This feature is useful for **storytelling, brainstorming ideas, and general AI-assisted writing**.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing the text prompt for content generation. |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        { \"text\": \"Write a short story about technology in 2050.\" }\n      ]\n    }\n  ]\n}\n\n ```\n\n#### **✅ Expected Response (Status 200)**\n\n- AI-generated **short story** based on the prompt.\n    \n- Coherent and contextually relevant text output.\n    \n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure the `contents` array is correctly formatted. |\n| `401` | \"Invalid API key.\" | Verify that your API key is valid and active. |\n| `403` | \"Permission denied.\" | Check if your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce the request frequency or upgrade your quota. |\n| `500` | \"Internal Server Error\" | Retry after some time or report the issue to support. |\n\nThe **Examples** of Successful and Error Responses are added in the **Basic text generation feature** Request example Sections.\n\n#### **📌 How to Use**\n\n1. **Define a text prompt** to generate content.\n    \n2. **Send a POST request** to the Gemini API.\n    \n3. **Receive AI-generated text** relevant to the given prompt.\n    \n\n#### ✅ **Use Cases**\n\nThis feature is ideal for **content creators, bloggers, and creative writing enthusiasts**."
+			},
+			"response": [
+				{
+					"name": "Basic Text 200",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a short story about technology in 2050.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://67f74e35-8426-4df7-97fa-9dc4c73ad50d.mock.pstmn.io",
+							"protocol": "https",
+							"host": [
+								"67f74e35-8426-4df7-97fa-9dc4c73ad50d",
+								"mock",
+								"pstmn",
+								"io"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [{ \"text\": \"Technology in 2050 will be driven by AI advancements...\" }]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+				},
+				{
+					"name": "Basic Text 400",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a short story about technology in 2050.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+				},
+				{
+					"name": "Basic Text 401",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a short story about technology in 2050.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+				},
+				{
+					"name": "Basic Text 403",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a short story about technology in 2050.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+				},
+				{
+					"name": "Basic Text 500",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a short story about technology in 2050.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+				},
+				{
+					"name": "Basic Text 429",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Write a short story about technology in 2050.\" }\r\n      ]\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Too Many Requests",
+					"code": 429,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t\r\n"
+				}
+			]
+		},
+		{
+			"name": "Text with Safety",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains 'candidates'\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"candidates\");\r",
+							"    pm.expect(jsonData.candidates).to.be.an(\"array\").that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains text output\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.candidates[0].content.parts[0]).to.have.property(\"text\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a joke about AI.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"safetySettings\": [\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\r\n      \"threshold\": \"BLOCK_ONLY_HIGH\"\r\n    },\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HARASSMENT\",\r\n      \"threshold\": \"BLOCK_MEDIUM_AND_ABOVE\"\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}} ",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"models",
+						"{{model_name}}:generateContent"
+					],
+					"query": [
+						{
+							"key": "key",
+							"value": "{{api_key}} "
+						}
+					]
+				},
+				"description": "### **📝 Gemini Text Generation with Safety Parameters**\n\n#### **📌 Purpose**\n\nThe Gemini API allows text generation while enforcing **content safety measures** to prevent harmful or inappropriate responses. This is useful for applications that require **moderation, responsible AI usage, and filtered content generation**.\n\n#### **🔗 Request URL**\n\n```\n{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}\n\n ```\n\n- **Method:** `POST`\n    \n\n#### **📥 Required Parameters**\n\n| Parameter | Type | Description |\n| --- | --- | --- |\n| `contents` | Array | An array containing the text prompt for content generation. |\n| `safetySettings` | Array | Configurable settings to block or filter content based on predefined harm categories. |\n\n#### **📜 Example Request Body**\n\n``` json\n{\n  \"contents\": [\n    {\n      \"parts\": [\n        { \"text\": \"Tell me a joke about AI.\" }\n      ]\n    }\n  ],\n  \"safetySettings\": [\n    {\n      \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\n      \"threshold\": \"BLOCK_ONLY_HIGH\"\n    },\n    {\n      \"category\": \"HARM_CATEGORY_HARASSMENT\",\n      \"threshold\": \"BLOCK_MEDIUM_AND_ABOVE\"\n    }\n  ]\n}\n\n ```\n\n#### **✅ Expected Response (Status Code 200)**\n\n- A generated **joke** while ensuring it adheres to safety guidelines.\n    \n- Responses are filtered based on safety parameters to **prevent offensive content**.\n    \n\n#### **❌ Common Errors & Troubleshooting**\n\n| Status Code | Error Message | Reason & Solution |\n| --- | --- | --- |\n| `400` | \"Invalid request: Missing required field 'contents'.\" | Ensure the `contents` array is correctly formatted. |\n| `401` | \"Invalid API key.\" | Verify that your API key is valid and active. |\n| `403` | \"Permission denied.\" | Check if your API key has the necessary permissions. |\n| `429` | \"Quota exceeded.\" | Reduce the request frequency or upgrade your quota. |\n| `500` | \"Internal Server Error\" | Retry after some time or report the issue to support. |\n\nThe **Examples** of Successful and Error Responses are added in the **Text with Safety** request example Sections.\n\n#### **📌 How to Use**\n\n1. **Define a text prompt** for content generation.\n    \n2. **Set safety parameters** to filter harmful content.\n    \n3. **Send a POST request** to the Gemini API.\n    \n4. **Receive AI-generated content** with content moderation applied.\n    \n\n#### ✅Use Case\n\nThis feature is ideal for **chatbots, content platforms, and applications that require AI-generated text with responsible filtering**. 🚀"
+			},
+			"response": [
+				{
+					"name": "Text with Safety 200",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a joke about AI.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"safetySettings\": [\r\n    {\r\n      \"category\": \"HATE_SPEECH\",\r\n      \"threshold\": \"BLOCK_ONLY_HIGH\"\r\n    },\r\n    {\r\n      \"category\": \"HARASSMENT\",\r\n      \"threshold\": \"BLOCK_MEDIUM_AND_ABOVE\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}} ",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}} "
+								}
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n  \"candidates\": [\r\n    {\r\n      \"content\": {\r\n        \"parts\": [\r\n          {\r\n            \"text\": \"Why did the AI break up with its chatbot girlfriend? Because she kept giving him mixed signals!\"\r\n          }\r\n        ]\r\n      }\r\n    }\r\n  ]\r\n}\r\n"
+				},
+				{
+					"name": "Text with Safety 400",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a joke about AI.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"safetySettings\": [\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\r\n      \"threshold\": \"BLOCK_ONLY_HIGH\"\r\n    },\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HARASSMENT\",\r\n      \"threshold\": \"BLOCK_MEDIUM_AND_ABOVE\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Bad Request",
+					"code": 400,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{\r\n  \"error\": {\r\n    \"code\": 400,\r\n    \"message\": \"Invalid request: Missing required field 'contents'.\",\r\n    \"status\": \"INVALID_ARGUMENT\"\r\n  }\r\n}\r\n"
+				},
+				{
+					"name": "Text with Safety 401",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a joke about AI.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"safetySettings\": [\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\r\n      \"threshold\": \"BLOCK_ONLY_HIGH\"\r\n    },\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HARASSMENT\",\r\n      \"threshold\": \"BLOCK_MEDIUM_AND_ABOVE\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 401, \"message\": \"API key is missing or invalid.\", \"status\": \"UNAUTHENTICATED\" } }"
+				},
+				{
+					"name": "Text with Safety 403",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a joke about AI.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"safetySettings\": [\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\r\n      \"threshold\": \"BLOCK_ONLY_HIGH\"\r\n    },\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HARASSMENT\",\r\n      \"threshold\": \"BLOCK_MEDIUM_AND_ABOVE\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 403, \"message\": \"Permission denied: Project is not authorized to use this API.\", \"status\": \"PERMISSION_DENIED\" } }"
+				},
+				{
+					"name": "Text with Safety 500",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a joke about AI.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"safetySettings\": [\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\r\n      \"threshold\": \"BLOCK_ONLY_HIGH\"\r\n    },\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HARASSMENT\",\r\n      \"threshold\": \"BLOCK_MEDIUM_AND_ABOVE\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Internal Server Error",
+					"code": 500,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 500, \"message\": \"Internal server error. Please try again later.\", \"status\": \"INTERNAL\" } }\t"
+				},
+				{
+					"name": "Text with Safety 429",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"contents\": [\r\n    {\r\n      \"parts\": [\r\n        { \"text\": \"Tell me a joke about AI.\" }\r\n      ]\r\n    }\r\n  ],\r\n  \"safetySettings\": [\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HATE_SPEECH\",\r\n      \"threshold\": \"BLOCK_ONLY_HIGH\"\r\n    },\r\n    {\r\n      \"category\": \"HARM_CATEGORY_HARASSMENT\",\r\n      \"threshold\": \"BLOCK_MEDIUM_AND_ABOVE\"\r\n    }\r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/models/{{model_name}}:generateContent?key={{api_key}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"models",
+								"{{model_name}}:generateContent"
+							],
+							"query": [
+								{
+									"key": "key",
+									"value": "{{api_key}}"
+								}
+							]
+						}
+					},
+					"status": "Too Many Requests",
+					"code": 429,
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": "{ \"error\": { \"code\": 429, \"message\": \"Quota exceeded. Too many requests.\", \"status\": \"RESOURCE_EXHAUSTED\" } }\t\r\n"
+				}
+			]
+		}
+	]
+}

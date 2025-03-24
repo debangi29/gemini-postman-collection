@@ -1,0 +1,38 @@
+name: Update Postman Collections
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Runs daily at midnight UTC
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  update-collections:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'  # Use the latest stable Node.js version
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Fetch Latest API Documentation
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}  # ✅ Use GitHub Secret
+        run: node scripts/fetch-latest-api-docs.js
+        
+      - name: Update Postman Collections
+        run: node scripts/update-collections.js
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add collections/*.json scripts/docs-data.json
+          git commit -m "Auto-update Postman collections and API docs [skip ci]" || echo "No changes to commit"
+          git push

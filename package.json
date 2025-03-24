@@ -1,0 +1,16 @@
+{
+  "name": "gemini-postman-collection",
+  "version": "1.0.0",
+  "description": "Automatically update the Postman Workspace with the latest Gemini API changes and documentation, ensuring it remains accurate and up-to-date.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "axios": "^1.8.4",
+    "cheerio": "^1.0.0"
+  }
+}
