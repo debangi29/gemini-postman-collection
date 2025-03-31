@@ -16,9 +16,9 @@ function updateCollections() {
 
         // Model mapping for each collection
         const modelMapping = {
-            'Gemini Chat.postman_collection.json': 'gemini-1.5-pro-latest',
-            'Gemini Code Generation.postman_collection.json': 'gemini-1.5-pro-latest',
-            'Gemini Text Generation.postman_collection.json': 'gemini-1.5-pro-latest',
+            'Gemini Chat.postman_collection.json': 'gemini-2.0-flash-lite-001',
+            'Gemini Code Generation.postman_collection.json': 'gemini-2.0-flash-001',
+            'Gemini Text Generation.postman_collection.json': 'gemini-2.0-pro-exp',
             'Gemini Image Understanding.postman_collection.json': 'gemini-1.5-pro-latest',
             'Gemini Image Generation.postman_collection.json': 'gemini-2.0-flash-exp-image-generation'
         };
@@ -29,11 +29,11 @@ function updateCollections() {
             const collection = JSON.parse(fs.readFileSync(filePath, 'utf8'));
 
             // Get the appropriate model for this collection
-            const modelName = modelMapping[file] || 'gemini-1.5-pro-latest';
+            const modelName = modelMapping[file];
 
             // Get the appropriate API documentation for this collection's model
-            const modelDocs = docsData.models.find(model => model.name === modelName) || {};
-            const endpointDocs = modelDocs.endpoints || [];
+            const modelDocs = docsData.models.find(model => model.name === modelName);
+            const endpointDocs = modelDocs.endpoints;
 
             // Update collection metadata
             collection.info.lastUpdated = new Date().toISOString();
@@ -56,7 +56,6 @@ function updateCollections() {
 function updateCollectionItems(items, endpointDocs, modelName) {
     // Recursively process each item in the collection
     for (const item of items) {
-        // If this is a folder (has sub-items)
         if (item.item && Array.isArray(item.item)) {
             updateCollectionItems(item.item, endpointDocs, modelName);
             continue;

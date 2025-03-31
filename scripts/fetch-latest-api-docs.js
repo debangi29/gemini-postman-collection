@@ -3,7 +3,7 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-// const API_KEY = 'A...............I';
+// const API_KEY = 'A.............I';
 const API_KEY = process.env.GEMINI_API_KEY; // ✅ Load from environment variable
 
 // URLs for fetching Gemini API documentation
@@ -70,7 +70,7 @@ function processMethodsToEndpoints(methods, basePath) {
             }
         }
 
-        // Add request body parameters if available
+        // Add request body parameters 
         if (methodData.request) {
             if (methodData.request.properties) {
                 for (const [propName, propData] of Object.entries(methodData.request.properties)) {
@@ -85,7 +85,7 @@ function processMethodsToEndpoints(methods, basePath) {
             }
         }
 
-        // Add response data if available
+        // Add response data 
         if (methodData.response) {
             endpoint.responses.push({
                 status: 200,
@@ -169,6 +169,34 @@ async function fetchLatestApiDocs() {
                 maxTokens: 4096,
                 capabilities: ['text', 'image-generation'],
                 endpoints: []
+            },
+            {
+                name: "gemini-1.5-pro-002",
+                description: "Gemini 1.5-pro-002 model for image with text analysis",
+                maxTokens: 8192,
+                capabilities: ["text"],
+                endpoints: []
+            },
+            {
+                name: "gemini-2.0-flash-001",
+                description: "Gemini 2.0-flash-001 model for coding capabilities",
+                maxTokens: 8192,
+                capabilities: ["code"],
+                endpoints: []
+            },
+            {
+                name: "gemini-2.0-pro-exp",
+                description: "Gemini 2.0-pro-experimental model for text generation capabilities",
+                maxTokens: 8192,
+                capabilities: ["text"],
+                endpoints: []
+            },
+            {
+                name: "gemini-2.0-flash-lite-001",
+                description: "Gemini 2.0-flash-lite-001 model for chatting capabilities",
+                maxTokens: 8192,
+                capabilities: ["chat"],
+                endpoints: []
             }
         ];
 
@@ -195,7 +223,7 @@ async function fetchLatestApiDocs() {
         // Add models to API info
         apiInfo.models = geminiModels;
 
-        // Also fetch schemas from the API if available
+        // Also fetch schemas from the API 
         if (discoveryData.schemas) {
             apiInfo.schemas = discoveryData.schemas;
         }
@@ -249,6 +277,34 @@ function createFallbackDocsData() {
                 description: "Experimental Gemini 2.0 Flash model for image generation",
                 maxTokens: 4096,
                 capabilities: ["text", "image-generation"],
+                endpoints: []
+            },
+            {
+                name: "gemini-1.5-pro-002",
+                description: "Gemini 1.5-pro-002 model for image with text analysis",
+                maxTokens: 8192,
+                capabilities: ["text"],
+                endpoints: []
+            },
+            {
+                name: "gemini-2.0-flash-001",
+                description: "Gemini 2.0-flash-001 model for coding capabilities",
+                maxTokens: 8192,
+                capabilities: ["code"],
+                endpoints: []
+            },
+            {
+                name: "gemini-2.0-pro-exp",
+                description: "Gemini 2.0-pro-experimental model for text generation capabilities",
+                maxTokens: 8192,
+                capabilities: ["text"],
+                endpoints: []
+            },
+            {
+                name: "gemini-2.0-flash-lite-001",
+                description: "Gemini 2.0-flash-lite-001 model for chatting capabilities",
+                maxTokens: 8192,
+                capabilities: ["chat"],
                 endpoints: []
             }
         ]
