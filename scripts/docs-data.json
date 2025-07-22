@@ -3629,6 +3629,10 @@
         "chunk": {
           "description": "`Chunk` associated with the query.",
           "$ref": "Chunk"
+        },
+        "document": {
+          "description": "`Document` associated with the chunk.",
+          "$ref": "Document"
         }
       }
     },
