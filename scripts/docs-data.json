@@ -650,7 +650,7 @@
     },
     "GenerateContentRequest": {
       "id": "GenerateContentRequest",
-      "description": "Request to generate a completion from the model. NEXT ID: 14",
+      "description": "Request to generate a completion from the model.",
       "type": "object",
       "properties": {
         "model": {
@@ -2582,6 +2582,230 @@
           "items": {
             "$ref": "ModalityTokenCount"
           }
+        }
+      }
+    },
+    "BatchGenerateContentRequest": {
+      "id": "BatchGenerateContentRequest",
+      "description": "Request for a BatchGenerateContent operation.",
+      "type": "object",
+      "properties": {
+        "batch": {
+          "description": "Required. The batch to create.",
+          "$ref": "GenerateContentBatch"
+        }
+      }
+    },
+    "GenerateContentBatch": {
+      "id": "GenerateContentBatch",
+      "description": "A resource representing a batch of GenerateContent requests.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Output only. Identifier. Resource name of the batch. Format: `batches/{batch_id}`.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Required. The user-defined name of this batch.",
+          "type": "string"
+        },
+        "inputConfig": {
+          "description": "Required. Input configuration of the instances on which batch processing are performed.",
+          "$ref": "InputConfig"
+        },
+        "output": {
+          "description": "Output only. The output of the batch request.",
+          "readOnly": true,
+          "$ref": "GenerateContentBatchOutput"
+        },
+        "createTime": {
+          "description": "Output only. The time at which the batch was created.",
+          "readOnly": true,
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "endTime": {
+          "description": "Output only. The time at which the batch processing completed.",
+          "readOnly": true,
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "updateTime": {
+          "description": "Output only. The time at which the batch was last updated.",
+          "readOnly": true,
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "batchStats": {
+          "description": "Output only. Stats about the batch.",
+          "readOnly": true,
+          "$ref": "BatchStats"
+        },
+        "state": {
+          "description": "Output only. The state of the batch.",
+          "readOnly": true,
+          "type": "string",
+          "enumDescriptions": [
+            "The batch state is unspecified.",
+            "The service is preparing to run the batch.",
+            "The batch is in progress.",
+            "The batch completed successfully.",
+            "The batch failed.",
+            "The batch has been cancelled.",
+            "The batch has expired."
+          ],
+          "enum": [
+            "BATCH_STATE_UNSPECIFIED",
+            "BATCH_STATE_PENDING",
+            "BATCH_STATE_RUNNING",
+            "BATCH_STATE_SUCCEEDED",
+            "BATCH_STATE_FAILED",
+            "BATCH_STATE_CANCELLED",
+            "BATCH_STATE_EXPIRED"
+          ]
+        },
+        "priority": {
+          "description": "Optional. The priority of the batch. Batches with a higher priority value will be processed before batches with a lower priority value. Negative values are allowed. Default is 0.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "InputConfig": {
+      "id": "InputConfig",
+      "description": "Configures the input to the batch request.",
+      "type": "object",
+      "properties": {
+        "fileName": {
+          "description": "The name of the `File` containing the input requests.",
+          "type": "string"
+        },
+        "requests": {
+          "description": "The requests to be processed in the batch.",
+          "$ref": "InlinedRequests"
+        }
+      }
+    },
+    "InlinedRequests": {
+      "id": "InlinedRequests",
+      "description": "The requests to be processed in the batch if provided as part of the batch creation request.",
+      "type": "object",
+      "properties": {
+        "requests": {
+          "description": "Required. The requests to be processed in the batch.",
+          "type": "array",
+          "items": {
+            "$ref": "InlinedRequest"
+          }
+        }
+      }
+    },
+    "InlinedRequest": {
+      "id": "InlinedRequest",
+      "description": "The request to be processed in the batch.",
+      "type": "object",
+      "properties": {
+        "request": {
+          "description": "Required. The request to be processed in the batch.",
+          "$ref": "GenerateContentRequest"
+        },
+        "metadata": {
+          "description": "Optional. The metadata to be associated with the request.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object."
+          }
+        }
+      }
+    },
+    "GenerateContentBatchOutput": {
+      "id": "GenerateContentBatchOutput",
+      "description": "The output of a batch request. This is returned in the BatchGenerateContentResponse or the GenerateContentBatch.output field.",
+      "type": "object",
+      "properties": {
+        "responsesFile": {
+          "description": "Output only. The file ID of the file containing the responses. The file will be a JSONL file with a single response per line. The responses will be GenerateContentResponse messages formatted as JSON. The responses will be written in the same order as the input requests.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "inlinedResponses": {
+          "description": "Output only. The responses to the requests in the batch. Returned when the batch was built using inlined requests. The responses will be in the same order as the input requests.",
+          "readOnly": true,
+          "$ref": "InlinedResponses"
+        }
+      }
+    },
+    "InlinedResponses": {
+      "id": "InlinedResponses",
+      "description": "The responses to the requests in the batch.",
+      "type": "object",
+      "properties": {
+        "inlinedResponses": {
+          "description": "Output only. The responses to the requests in the batch.",
+          "readOnly": true,
+          "type": "array",
+          "items": {
+            "$ref": "InlinedResponse"
+          }
+        }
+      }
+    },
+    "InlinedResponse": {
+      "id": "InlinedResponse",
+      "description": "The response to a single request in the batch.",
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "Output only. The error encountered while processing the request.",
+          "readOnly": true,
+          "$ref": "Status"
+        },
+        "response": {
+          "description": "Output only. The response to the request.",
+          "readOnly": true,
+          "$ref": "GenerateContentResponse"
+        },
+        "metadata": {
+          "description": "Output only. The metadata associated with the request.",
+          "readOnly": true,
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object."
+          }
+        }
+      }
+    },
+    "BatchStats": {
+      "id": "BatchStats",
+      "description": "Stats about the batch.",
+      "type": "object",
+      "properties": {
+        "requestCount": {
+          "description": "Output only. The number of requests in the batch.",
+          "readOnly": true,
+          "type": "string",
+          "format": "int64"
+        },
+        "successfulRequestCount": {
+          "description": "Output only. The number of requests that were successfully processed.",
+          "readOnly": true,
+          "type": "string",
+          "format": "int64"
+        },
+        "failedRequestCount": {
+          "description": "Output only. The number of requests that failed to be processed.",
+          "readOnly": true,
+          "type": "string",
+          "format": "int64"
+        },
+        "pendingRequestCount": {
+          "description": "Output only. The number of requests that are still pending processing.",
+          "readOnly": true,
+          "type": "string",
+          "format": "int64"
         }
       }
     },
