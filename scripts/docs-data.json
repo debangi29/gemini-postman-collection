@@ -1036,7 +1036,7 @@
           ]
         },
         "format": {
-          "description": "Optional. The format of the data. This is used only for primitive datatypes. Supported formats: for NUMBER type: float, double for INTEGER type: int32, int64 for STRING type: enum, date-time",
+          "description": "Optional. The format of the data. Any value is allowed, but most do not trigger any special functionality.",
           "type": "string"
         },
         "title": {
