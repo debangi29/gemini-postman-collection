@@ -1404,7 +1404,7 @@
           "type": "boolean"
         },
         "logprobs": {
-          "description": "Optional. Only valid if response_logprobs=True. This sets the number of top logprobs to return at each decoding step in the Candidate.logprobs_result.",
+          "description": "Optional. Only valid if response_logprobs=True. This sets the number of top logprobs to return at each decoding step in the Candidate.logprobs_result. The number must be in the range of [0, 20].",
           "type": "integer",
           "format": "int32"
         },
