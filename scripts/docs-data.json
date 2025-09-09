@@ -1337,7 +1337,7 @@
     },
     "GenerationConfig": {
       "id": "GenerationConfig",
-      "description": "Configuration options for model generation and outputs. Not all parameters are configurable for every model.",
+      "description": "Configuration options for model generation and outputs. Not all parameters are configurable for every model. Next ID: 28",
       "type": "object",
       "properties": {
         "candidateCount": {
