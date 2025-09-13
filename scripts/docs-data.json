@@ -815,7 +815,7 @@
           "type": "string"
         },
         "response": {
-          "description": "Required. The function response in JSON object format.",
+          "description": "Required. The function response in JSON object format. Callers can use any keys of their choice that fit the function's syntax to return the function output, e.g. \"output\", \"result\", etc. In particular, if the function call failed to execute, the response can have an \"error\" key to return error details to the model.",
           "type": "object",
           "additionalProperties": {
             "type": "any",
@@ -967,7 +967,7 @@
       "type": "object",
       "properties": {
         "name": {
-          "description": "Required. The name of the function. Must be a-z, A-Z, 0-9, or contain underscores and dashes, with a maximum length of 64.",
+          "description": "Required. The name of the function. Must be a-z, A-Z, 0-9, or contain underscores, colons, dots, and dashes, with a maximum length of 64.",
           "type": "string"
         },
         "description": {
