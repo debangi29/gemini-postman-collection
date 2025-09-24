@@ -989,6 +989,10 @@
           "description": "Optional. GoogleSearch tool type. Tool to support Google Search in Model. Powered by Google.",
           "$ref": "GoogleSearch"
         },
+        "computerUse": {
+          "description": "Optional. Tool to support the model interacting directly with the computer. If enabled, it automatically populates computer-use specific Function Declarations.",
+          "$ref": "ComputerUse"
+        },
         "urlContext": {
           "description": "Optional. Tool to support URL context retrieval.",
           "$ref": "UrlContext"
@@ -1244,6 +1248,32 @@
           "description": "Optional. Exclusive end of the interval. If specified, a Timestamp matching this interval will have to be before the end.",
           "type": "string",
           "format": "google-datetime"
+        }
+      }
+    },
+    "ComputerUse": {
+      "id": "ComputerUse",
+      "description": "Computer Use tool type.",
+      "type": "object",
+      "properties": {
+        "environment": {
+          "description": "Required. The environment being operated.",
+          "type": "string",
+          "enumDescriptions": [
+            "Defaults to browser.",
+            "Operates in a web browser."
+          ],
+          "enum": [
+            "ENVIRONMENT_UNSPECIFIED",
+            "ENVIRONMENT_BROWSER"
+          ]
+        },
+        "excludedPredefinedFunctions": {
+          "description": "Optional. By default, predefined functions are included in the final model call. Some of them can be explicitly excluded from being automatically included. This can serve two purposes: 1. Using a more restricted / different action space. 2. Improving the definitions / instructions of predefined functions.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -2669,6 +2699,10 @@
       "description": "A resource representing a batch of `GenerateContent` requests.",
       "type": "object",
       "properties": {
+        "model": {
+          "description": "Required. The name of the `Model` to use for generating the completion. Format: `models/{model}`.",
+          "type": "string"
+        },
         "name": {
           "description": "Output only. Identifier. Resource name of the batch. Format: `batches/{batch_id}`.",
           "readOnly": true,
@@ -2893,6 +2927,10 @@
       "description": "A resource representing a batch of `EmbedContent` requests.",
       "type": "object",
       "properties": {
+        "model": {
+          "description": "Required. The name of the `Model` to use for generating the completion. Format: `models/{model}`.",
+          "type": "string"
+        },
         "name": {
           "description": "Output only. Identifier. Resource name of the batch. Format: `batches/{batch_id}`.",
           "readOnly": true,
