@@ -1518,6 +1518,10 @@
           "description": "Optional. Config for thinking features. An error will be returned if this field is set for models that don't support thinking.",
           "$ref": "ThinkingConfig"
         },
+        "imageConfig": {
+          "description": "Optional. Config for image generation. An error will be returned if this field is set for models that don't support these config options.",
+          "$ref": "ImageConfig"
+        },
         "mediaResolution": {
           "description": "Optional. If specified, the media resolution specified will be used.",
           "type": "string",
@@ -1619,6 +1623,17 @@
           "description": "The number of thoughts tokens that the model should generate.",
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "ImageConfig": {
+      "id": "ImageConfig",
+      "description": "Config for image generation features.",
+      "type": "object",
+      "properties": {
+        "aspectRatio": {
+          "description": "Optional. The aspect ratio of the image to generate. Supported aspect ratios: 1:1, 2:3, 3:2, 3:4, 4:3, 9:16, 16:9, 21:9. If not specified, the model will choose a default aspect ratio based on any reference images provided.",
+          "type": "string"
         }
       }
     },
