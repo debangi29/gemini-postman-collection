@@ -1729,6 +1729,11 @@
             "TOO_MANY_TOOL_CALLS"
           ]
         },
+        "finishMessage": {
+          "description": "Optional. Output only. Details the reason why the model stopped generating tokens. This is populated only when `finish_reason` is set.",
+          "readOnly": true,
+          "type": "string"
+        },
         "safetyRatings": {
           "description": "List of ratings for the safety of a response candidate. There is at most one rating per category.",
           "type": "array",
