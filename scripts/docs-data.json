@@ -1011,6 +1011,10 @@
         "urlContext": {
           "description": "Optional. Tool to support URL context retrieval.",
           "$ref": "UrlContext"
+        },
+        "fileSearch": {
+          "description": "Optional. FileSearch tool type. Tool to retrieve knowledge from Semantic Retrieval corpora.",
+          "$ref": "FileSearch"
         }
       }
     },
@@ -1298,6 +1302,51 @@
       "type": "object",
       "properties": {}
     },
+    "FileSearch": {
+      "id": "FileSearch",
+      "description": "The FileSearch tool that retrieves knowledge from Semantic Retrieval corpora. Files are imported to Semantic Retrieval corpora using the ImportFile API.",
+      "type": "object",
+      "properties": {
+        "retrievalResources": {
+          "description": "Required. Semantic retrieval resources to retrieve from. Currently only supports one corpus. In the future we may open up multiple corpora support.",
+          "type": "array",
+          "items": {
+            "$ref": "RetrievalResource"
+          }
+        },
+        "retrievalConfig": {
+          "description": "Optional. The configuration for the retrieval.",
+          "$ref": "FileSearchRetrievalConfig"
+        }
+      }
+    },
+    "RetrievalResource": {
+      "id": "RetrievalResource",
+      "description": "The semantic retrieval resource to retrieve from.",
+      "type": "object",
+      "properties": {
+        "ragStoreName": {
+          "description": "Required. The name of the semantic retrieval resource to retrieve from. Example: `ragStores/my-rag-store-123`",
+          "type": "string"
+        }
+      }
+    },
+    "FileSearchRetrievalConfig": {
+      "id": "FileSearchRetrievalConfig",
+      "description": "Semantic retrieval configuration.",
+      "type": "object",
+      "properties": {
+        "topK": {
+          "description": "Optional. The number of semantic retrieval chunks to retrieve.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "metadataFilter": {
+          "description": "Optional. Metadata filter to apply to the semantic retrieval documents and chunks.",
+          "type": "string"
+        }
+      }
+    },
     "ToolConfig": {
       "id": "ToolConfig",
       "description": "The Tool configuration containing parameters for specifying `Tool` use in the request.",
@@ -1464,11 +1513,11 @@
           "description": "Optional. Output schema of the generated candidate text. Schemas must be a subset of the [OpenAPI schema](https://spec.openapis.org/oas/v3.0.3#schema) and can be objects, primitives or arrays. If set, a compatible `response_mime_type` must also be set. Compatible MIME types: `application/json`: Schema for JSON response. Refer to the [JSON text generation guide](https://ai.google.dev/gemini-api/docs/json-mode) for more details.",
           "$ref": "Schema"
         },
-        "responseJsonSchema": {
+        "_responseJsonSchema": {
           "description": "Optional. Output schema of the generated response. This is an alternative to `response_schema` that accepts [JSON Schema](https://json-schema.org/). If set, `response_schema` must be omitted, but `response_mime_type` is required. While the full JSON Schema may be sent, not all features are supported. Specifically, only the following properties are supported: - `$id` - `$defs` - `$ref` - `$anchor` - `type` - `format` - `title` - `description` - `enum` (for strings and numbers) - `items` - `prefixItems` - `minItems` - `maxItems` - `minimum` - `maximum` - `anyOf` - `oneOf` (interpreted the same as `anyOf`) - `properties` - `additionalProperties` - `required` The non-standard `propertyOrdering` property may also be set. Cyclic references are unrolled to a limited degree and, as such, may only be used within non-required properties. (Nullable properties are not sufficient.) If `$ref` is set on a sub-schema, no other properties, except for than those starting as a `$`, may be set.",
           "type": "any"
         },
-        "responseJsonSchemaOrdered": {
+        "responseJsonSchema": {
           "description": "Optional. An internal detail. Use `responseJsonSchema` rather than this field.",
           "type": "any"
         },
@@ -2029,6 +2078,10 @@
         "web": {
           "description": "Grounding chunk from the web.",
           "$ref": "Web"
+        },
+        "retrievedContext": {
+          "description": "Optional. Grounding chunk from context retrieved by the file search tool.",
+          "$ref": "RetrievedContext"
         }
       }
     },
@@ -2043,6 +2096,25 @@
         },
         "title": {
           "description": "Title of the chunk.",
+          "type": "string"
+        }
+      }
+    },
+    "RetrievedContext": {
+      "id": "RetrievedContext",
+      "description": "Chunk from context retrieved by the file search tool.",
+      "type": "object",
+      "properties": {
+        "uri": {
+          "description": "Optional. URI reference of the semantic retrieval document.",
+          "type": "string"
+        },
+        "title": {
+          "description": "Optional. Title of the document.",
+          "type": "string"
+        },
+        "text": {
+          "description": "Optional. Text of the chunk.",
           "type": "string"
         }
       }
@@ -4142,6 +4214,58 @@
         }
       }
     },
+    "RagStore": {
+      "id": "RagStore",
+      "description": "A `RagStore` is a collection of `Document`s.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "Output only. Immutable. Identifier. The `RagStore` resource name. It is an ID (name excluding the \"ragStores/\" prefix) that can contain up to 40 characters that are lowercase alphanumeric or dashes (-). It is output only. The unique name will be derived from `display_name` along with a 12 character random suffix. Example: `ragStores/my-awesome-rag-store-123a456b789c` If `display_name` is not provided, the name will be randomly generated.",
+          "readOnly": true,
+          "type": "string"
+        },
+        "displayName": {
+          "description": "Optional. The human-readable display name for the `RagStore`. The display name must be no more than 512 characters in length, including spaces. Example: \"Docs on Semantic Retriever\"",
+          "type": "string"
+        },
+        "createTime": {
+          "description": "Output only. The Timestamp of when the `RagStore` was created.",
+          "readOnly": true,
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "updateTime": {
+          "description": "Output only. The Timestamp of when the `RagStore` was last updated.",
+          "readOnly": true,
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "activeDocumentsCount": {
+          "description": "Output only. The number of documents in the Ragstore that are active and ready for retrieval.",
+          "readOnly": true,
+          "type": "string",
+          "format": "int64"
+        },
+        "pendingDocumentsCount": {
+          "description": "Output only. The number of documents in the Ragstore that are being processed.",
+          "readOnly": true,
+          "type": "string",
+          "format": "int64"
+        },
+        "failedDocumentsCount": {
+          "description": "Output only. The number of documents in the Ragstore that have failed processing.",
+          "readOnly": true,
+          "type": "string",
+          "format": "int64"
+        },
+        "sizeBytes": {
+          "description": "Output only. The size in bytes of the Ragstore. This is the total size of all the documents in the Ragstore.",
+          "readOnly": true,
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
     "Corpus": {
       "id": "Corpus",
       "description": "A `Corpus` is a collection of `Document`s. A project can create up to 10 corpora.",
@@ -4167,6 +4291,24 @@
           "readOnly": true,
           "type": "string",
           "format": "google-datetime"
+        }
+      }
+    },
+    "ListRagStoresResponse": {
+      "id": "ListRagStoresResponse",
+      "description": "Response from `ListRagStores` containing a paginated list of `RagStores`. The results are sorted by ascending `rag_store.create_time`.",
+      "type": "object",
+      "properties": {
+        "ragStores": {
+          "description": "The returned rag_stores.",
+          "type": "array",
+          "items": {
+            "$ref": "RagStore"
+          }
+        },
+        "nextPageToken": {
+          "description": "A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages.",
+          "type": "string"
         }
       }
     },
@@ -4376,6 +4518,34 @@
           "readOnly": true,
           "type": "string",
           "format": "google-datetime"
+        },
+        "state": {
+          "description": "Output only. Current state of the `Document`.",
+          "readOnly": true,
+          "type": "string",
+          "enumDescriptions": [
+            "The default value. This value is used if the state is omitted.",
+            "Some `Chunks` of the `Document` are being processed (embedding and vector storage).",
+            "All `Chunks` of the `Document` is processed and available for querying.",
+            "Some `Chunks` of the `Document` failed processing."
+          ],
+          "enum": [
+            "STATE_UNSPECIFIED",
+            "STATE_PENDING",
+            "STATE_ACTIVE",
+            "STATE_FAILED"
+          ]
+        },
+        "sizeBytes": {
+          "description": "Output only. The size in bytes of the Document.",
+          "readOnly": true,
+          "type": "string",
+          "format": "int64"
+        },
+        "mimeType": {
+          "description": "Output only. The mime type of the Document.",
+          "readOnly": true,
+          "type": "string"
         }
       }
     },
@@ -4561,6 +4731,529 @@
         "nextPageToken": {
           "description": "A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages.",
           "type": "string"
+        }
+      }
+    },
+    "UploadToRagStoreRequest": {
+      "id": "UploadToRagStoreRequest",
+      "description": "Request for `UploadToRagStore`.",
+      "type": "object",
+      "properties": {
+        "blob": {
+          "description": "Raw bytes for media formats.",
+          "$ref": "GdataMedia"
+        },
+        "displayName": {
+          "description": "Optional. Display name of the created document.",
+          "type": "string"
+        },
+        "customMetadata": {
+          "description": "Custom metadata to be associated with the data.",
+          "type": "array",
+          "items": {
+            "$ref": "CustomMetadata"
+          }
+        },
+        "chunkingConfig": {
+          "description": "Optional. Config for telling the service how to chunk the data. If not provided, the service will use default parameters.",
+          "$ref": "ChunkingConfig"
+        },
+        "mimeType": {
+          "description": "Optional. MIME type of the data. If not provided, it will be inferred from the uploaded content.",
+          "type": "string"
+        }
+      }
+    },
+    "GdataMedia": {
+      "id": "GdataMedia",
+      "description": "A reference to data stored on the filesystem, on GFS or in blobstore.",
+      "type": "object",
+      "properties": {
+        "contentType": {
+          "description": "MIME type of the data",
+          "type": "string"
+        },
+        "timestamp": {
+          "description": "Time at which the media data was last updated, in milliseconds since UNIX epoch",
+          "type": "string",
+          "format": "uint64"
+        },
+        "token": {
+          "description": "A unique fingerprint/version id for the media data",
+          "type": "string"
+        },
+        "length": {
+          "description": "Size of the data, in bytes",
+          "type": "string",
+          "format": "int64"
+        },
+        "filename": {
+          "description": "Original file name",
+          "type": "string"
+        },
+        "referenceType": {
+          "description": "Describes what the field reference contains.",
+          "type": "string",
+          "enumDescriptions": [
+            "Reference contains a GFS path or a local path.",
+            "Reference points to a blobstore object. This could be either a v1 blob_ref or a v2 blobstore2_info. Clients should check blobstore2_info first, since v1 is being deprecated.",
+            "Data is included into this proto buffer",
+            "Data should be accessed from the current service using the operation GetMedia.",
+            "The content for this media object is stored across multiple partial media objects under the composite_media field.",
+            "Reference points to a bigstore object",
+            "Indicates the data is stored in diff_version_response.",
+            "Indicates the data is stored in diff_checksums_response.",
+            "Indicates the data is stored in diff_download_response.",
+            "Indicates the data is stored in diff_upload_request.",
+            "Indicates the data is stored in diff_upload_response.",
+            "Indicates the data is stored in cosmo_binary_reference.",
+            "Informs Scotty to generate a response payload with the size specified in the length field. The contents of the payload are generated by Scotty and are undefined. This is useful for testing download speeds between the user and Scotty without involving a real payload source. Note: range is not supported when using arbitrary_bytes."
+          ],
+          "enum": [
+            "PATH",
+            "BLOB_REF",
+            "INLINE",
+            "GET_MEDIA",
+            "COMPOSITE_MEDIA",
+            "BIGSTORE_REF",
+            "DIFF_VERSION_RESPONSE",
+            "DIFF_CHECKSUMS_RESPONSE",
+            "DIFF_DOWNLOAD_RESPONSE",
+            "DIFF_UPLOAD_REQUEST",
+            "DIFF_UPLOAD_RESPONSE",
+            "COSMO_BINARY_REFERENCE",
+            "ARBITRARY_BYTES"
+          ]
+        },
+        "path": {
+          "description": "Path to the data, set if reference_type is PATH",
+          "type": "string"
+        },
+        "blobRef": {
+          "description": "Blobstore v1 reference, set if reference_type is BLOBSTORE_REF This should be the byte representation of a blobstore.BlobRef. Since Blobstore is deprecating v1, use blobstore2_info instead. For now, any v2 blob will also be represented in this field as v1 BlobRef.",
+          "deprecated": true,
+          "type": "string",
+          "format": "byte"
+        },
+        "inline": {
+          "description": "Media data, set if reference_type is INLINE",
+          "type": "string",
+          "format": "byte"
+        },
+        "mediaId": {
+          "description": "Media id to forward to the operation GetMedia. Can be set if reference_type is GET_MEDIA.",
+          "type": "string",
+          "format": "byte"
+        },
+        "hash": {
+          "description": "Deprecated, use one of explicit hash type fields instead. These two hash related fields will only be populated on Scotty based media uploads and will contain the content of the hash group in the NotificationRequest: http://cs/#google3/blobstore2/api/scotty/service/proto/upload_listener.proto&q=class:Hash Hex encoded hash value of the uploaded media.",
+          "deprecated": true,
+          "type": "string"
+        },
+        "algorithm": {
+          "description": "Deprecated, use one of explicit hash type fields instead. Algorithm used for calculating the hash. As of 2011/01/21, \"MD5\" is the only possible value for this field. New values may be added at any time.",
+          "deprecated": true,
+          "type": "string"
+        },
+        "compositeMedia": {
+          "description": "A composite media composed of one or more media objects, set if reference_type is COMPOSITE_MEDIA. The media length field must be set to the sum of the lengths of all composite media objects. Note: All composite media must have length specified.",
+          "type": "array",
+          "items": {
+            "$ref": "CompositeMedia"
+          }
+        },
+        "bigstoreObjectRef": {
+          "description": "Use object_id instead.",
+          "deprecated": true,
+          "type": "string",
+          "format": "byte"
+        },
+        "objectId": {
+          "description": "Reference to a TI Blob, set if reference_type is BIGSTORE_REF.",
+          "$ref": "ObjectId"
+        },
+        "blobstore2Info": {
+          "description": "Blobstore v2 info, set if reference_type is BLOBSTORE_REF and it refers to a v2 blob.",
+          "$ref": "Blobstore2Info"
+        },
+        "diffVersionResponse": {
+          "description": "Set if reference_type is DIFF_VERSION_RESPONSE.",
+          "$ref": "DiffVersionResponse"
+        },
+        "diffChecksumsResponse": {
+          "description": "Set if reference_type is DIFF_CHECKSUMS_RESPONSE.",
+          "$ref": "DiffChecksumsResponse"
+        },
+        "diffDownloadResponse": {
+          "description": "Set if reference_type is DIFF_DOWNLOAD_RESPONSE.",
+          "$ref": "DiffDownloadResponse"
+        },
+        "diffUploadRequest": {
+          "description": "Set if reference_type is DIFF_UPLOAD_REQUEST.",
+          "$ref": "DiffUploadRequest"
+        },
+        "diffUploadResponse": {
+          "description": "Set if reference_type is DIFF_UPLOAD_RESPONSE.",
+          "$ref": "DiffUploadResponse"
+        },
+        "contentTypeInfo": {
+          "description": "Extended content type information provided for Scotty uploads.",
+          "$ref": "ContentTypeInfo"
+        },
+        "downloadParameters": {
+          "description": "Parameters for a media download.",
+          "$ref": "DownloadParameters"
+        },
+        "crc32cHash": {
+          "description": "For Scotty Uploads: Scotty-provided hashes for uploads For Scotty Downloads: (WARNING: DO NOT USE WITHOUT PERMISSION FROM THE SCOTTY TEAM.) A Hash provided by the agent to be used to verify the data being downloaded. Currently only supported for inline payloads. Further, only crc32c_hash is currently supported.",
+          "type": "integer",
+          "format": "uint32"
+        },
+        "md5Hash": {
+          "description": "Scotty-provided MD5 hash for an upload.",
+          "type": "string",
+          "format": "byte"
+        },
+        "sha1Hash": {
+          "description": "Scotty-provided SHA1 hash for an upload.",
+          "type": "string",
+          "format": "byte"
+        },
+        "sha256Hash": {
+          "description": "Scotty-provided SHA256 hash for an upload.",
+          "type": "string",
+          "format": "byte"
+        },
+        "isPotentialRetry": {
+          "description": "|is_potential_retry| is set false only when Scotty is certain that it has not sent the request before. When a client resumes an upload, this field must be set true in agent calls, because Scotty cannot be certain that it has never sent the request before due to potential failure in the session state persistence.",
+          "type": "boolean"
+        },
+        "cosmoBinaryReference": {
+          "description": "A binary data reference for a media download. Serves as a technology-agnostic binary reference in some Google infrastructure. This value is a serialized storage_cosmo.BinaryReference proto. Storing it as bytes is a hack to get around the fact that the cosmo proto (as well as others it includes) doesn't support JavaScript. This prevents us from including the actual type of this field.",
+          "type": "string",
+          "format": "byte"
+        },
+        "hashVerified": {
+          "description": "For Scotty uploads only. If a user sends a hash code and the backend has requested that Scotty verify the upload against the client hash, Scotty will perform the check on behalf of the backend and will reject it if the hashes don't match. This is set to true if Scotty performed this verification.",
+          "type": "boolean"
+        }
+      }
+    },
+    "CompositeMedia": {
+      "id": "CompositeMedia",
+      "description": "A sequence of media data references representing composite data. Introduced to support Bigstore composite objects. For details, visit http://go/bigstore-composites.",
+      "type": "object",
+      "properties": {
+        "length": {
+          "description": "Size of the data, in bytes",
+          "type": "string",
+          "format": "int64"
+        },
+        "referenceType": {
+          "description": "Describes what the field reference contains.",
+          "type": "string",
+          "enumDescriptions": [
+            "Reference contains a GFS path or a local path.",
+            "Reference points to a blobstore object. This could be either a v1 blob_ref or a v2 blobstore2_info. Clients should check blobstore2_info first, since v1 is being deprecated.",
+            "Data is included into this proto buffer",
+            "Reference points to a bigstore object",
+            "Indicates the data is stored in cosmo_binary_reference."
+          ],
+          "enum": [
+            "PATH",
+            "BLOB_REF",
+            "INLINE",
+            "BIGSTORE_REF",
+            "COSMO_BINARY_REFERENCE"
+          ]
+        },
+        "path": {
+          "description": "Path to the data, set if reference_type is PATH",
+          "type": "string"
+        },
+        "blobRef": {
+          "description": "Blobstore v1 reference, set if reference_type is BLOBSTORE_REF This should be the byte representation of a blobstore.BlobRef. Since Blobstore is deprecating v1, use blobstore2_info instead. For now, any v2 blob will also be represented in this field as v1 BlobRef.",
+          "deprecated": true,
+          "type": "string",
+          "format": "byte"
+        },
+        "inline": {
+          "description": "Media data, set if reference_type is INLINE",
+          "type": "string",
+          "format": "byte"
+        },
+        "objectId": {
+          "description": "Reference to a TI Blob, set if reference_type is BIGSTORE_REF.",
+          "$ref": "ObjectId"
+        },
+        "blobstore2Info": {
+          "description": "Blobstore v2 info, set if reference_type is BLOBSTORE_REF and it refers to a v2 blob.",
+          "$ref": "Blobstore2Info"
+        },
+        "cosmoBinaryReference": {
+          "description": "A binary data reference for a media download. Serves as a technology-agnostic binary reference in some Google infrastructure. This value is a serialized storage_cosmo.BinaryReference proto. Storing it as bytes is a hack to get around the fact that the cosmo proto (as well as others it includes) doesn't support JavaScript. This prevents us from including the actual type of this field.",
+          "type": "string",
+          "format": "byte"
+        },
+        "crc32cHash": {
+          "description": "crc32.c hash for the payload.",
+          "type": "integer",
+          "format": "uint32"
+        },
+        "md5Hash": {
+          "description": "MD5 hash for the payload.",
+          "type": "string",
+          "format": "byte"
+        },
+        "sha1Hash": {
+          "description": "SHA-1 hash for the payload.",
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "ObjectId": {
+      "id": "ObjectId",
+      "description": "This is a copy of the tech.blob.ObjectId proto, which could not be used directly here due to transitive closure issues with JavaScript support; see http://b/8801763.",
+      "type": "object",
+      "properties": {
+        "bucketName": {
+          "description": "The name of the bucket to which this object belongs.",
+          "type": "string"
+        },
+        "objectName": {
+          "description": "The name of the object.",
+          "type": "string"
+        },
+        "generation": {
+          "description": "Generation of the object. Generations are monotonically increasing across writes, allowing them to be be compared to determine which generation is newer. If this is omitted in a request, then you are requesting the live object. See http://go/bigstore-versions",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "Blobstore2Info": {
+      "id": "Blobstore2Info",
+      "description": "Information to read/write to blobstore2.",
+      "type": "object",
+      "properties": {
+        "blobId": {
+          "description": "The blob id, e.g., /blobstore/prod/playground/scotty",
+          "type": "string"
+        },
+        "blobGeneration": {
+          "description": "The blob generation id.",
+          "type": "string",
+          "format": "int64"
+        },
+        "readToken": {
+          "description": "The blob read token. Needed to read blobs that have not been replicated. Might not be available until the final call.",
+          "type": "string"
+        },
+        "uploadMetadataContainer": {
+          "description": "Metadata passed from Blobstore -> Scotty for a new GCS upload. This is a signed, serialized blobstore2.BlobMetadataContainer proto which must never be consumed outside of Bigstore, and is not applicable to non-GCS media uploads.",
+          "type": "string",
+          "format": "byte"
+        },
+        "downloadReadHandle": {
+          "description": "Read handle passed from Bigstore -> Scotty for a GCS download. This is a signed, serialized blobstore2.ReadHandle proto which must never be set outside of Bigstore, and is not applicable to non-GCS media downloads.",
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "DiffVersionResponse": {
+      "id": "DiffVersionResponse",
+      "description": "Backend response for a Diff get version response. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.",
+      "type": "object",
+      "properties": {
+        "objectVersion": {
+          "description": "The version of the object stored at the server.",
+          "type": "string"
+        },
+        "objectSizeBytes": {
+          "description": "The total size of the server object.",
+          "type": "string",
+          "format": "int64"
+        }
+      }
+    },
+    "DiffChecksumsResponse": {
+      "id": "DiffChecksumsResponse",
+      "description": "Backend response for a Diff get checksums response. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.",
+      "type": "object",
+      "properties": {
+        "objectVersion": {
+          "description": "The object version of the object the checksums are being returned for.",
+          "type": "string"
+        },
+        "objectSizeBytes": {
+          "description": "The total size of the server object.",
+          "type": "string",
+          "format": "int64"
+        },
+        "chunkSizeBytes": {
+          "description": "The chunk size of checksums. Must be a multiple of 256KB.",
+          "type": "string",
+          "format": "int64"
+        },
+        "checksumsLocation": {
+          "description": "Exactly one of these fields must be populated. If checksums_location is filled, the server will return the corresponding contents to the user. If object_location is filled, the server will calculate the checksums based on the content there and return that to the user. For details on the format of the checksums, see http://go/scotty-diff-protocol.",
+          "$ref": "CompositeMedia"
+        },
+        "objectLocation": {
+          "description": "If set, calculate the checksums based on the contents and return them to the caller.",
+          "$ref": "CompositeMedia"
+        }
+      }
+    },
+    "DiffDownloadResponse": {
+      "id": "DiffDownloadResponse",
+      "description": "Backend response for a Diff download response. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.",
+      "type": "object",
+      "properties": {
+        "objectLocation": {
+          "description": "The original object location.",
+          "$ref": "CompositeMedia"
+        }
+      }
+    },
+    "DiffUploadRequest": {
+      "id": "DiffUploadRequest",
+      "description": "A Diff upload request. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.",
+      "type": "object",
+      "properties": {
+        "objectVersion": {
+          "description": "The object version of the object that is the base version the incoming diff script will be applied to. This field will always be filled in.",
+          "type": "string"
+        },
+        "objectInfo": {
+          "description": "The location of the new object. Agents must clone the object located here, as the upload server will delete the contents once a response is received.",
+          "$ref": "CompositeMedia"
+        },
+        "checksumsInfo": {
+          "description": "The location of the checksums for the new object. Agents must clone the object located here, as the upload server will delete the contents once a response is received. For details on the format of the checksums, see http://go/scotty-diff-protocol.",
+          "$ref": "CompositeMedia"
+        }
+      }
+    },
+    "DiffUploadResponse": {
+      "id": "DiffUploadResponse",
+      "description": "Backend response for a Diff upload request. For details on the Scotty Diff protocol, visit http://go/scotty-diff-protocol.",
+      "type": "object",
+      "properties": {
+        "objectVersion": {
+          "description": "The object version of the object at the server. Must be included in the end notification response. The version in the end notification response must correspond to the new version of the object that is now stored at the server, after the upload.",
+          "type": "string"
+        },
+        "originalObject": {
+          "description": "The location of the original file for a diff upload request. Must be filled in if responding to an upload start notification.",
+          "$ref": "CompositeMedia"
+        }
+      }
+    },
+    "ContentTypeInfo": {
+      "id": "ContentTypeInfo",
+      "description": "Detailed Content-Type information from Scotty. The Content-Type of the media will typically be filled in by the header or Scotty's best_guess, but this extended information provides the backend with more information so that it can make a better decision if needed. This is only used on media upload requests from Scotty.",
+      "type": "object",
+      "properties": {
+        "bestGuess": {
+          "description": "Scotty's best guess of what the content type of the file is.",
+          "type": "string"
+        },
+        "fromHeader": {
+          "description": "The content type of the file as specified in the request headers, multipart headers, or RUPIO start request.",
+          "type": "string"
+        },
+        "fromFileName": {
+          "description": "The content type of the file derived from the file extension of the original file name used by the client.",
+          "type": "string"
+        },
+        "fromUrlPath": {
+          "description": "The content type of the file derived from the file extension of the URL path. The URL path is assumed to represent a file name (which is typically only true for agents that are providing a REST API).",
+          "type": "string"
+        },
+        "fromBytes": {
+          "description": "The content type of the file derived by looking at specific bytes (i.e. \"magic bytes\") of the actual file.",
+          "type": "string"
+        }
+      }
+    },
+    "DownloadParameters": {
+      "id": "DownloadParameters",
+      "description": "Parameters specific to media downloads.",
+      "type": "object",
+      "properties": {
+        "allowGzipCompression": {
+          "description": "A boolean to be returned in the response to Scotty. Allows/disallows gzip encoding of the payload content when the server thinks it's advantageous (hence, does not guarantee compression) which allows Scotty to GZip the response to the client.",
+          "type": "boolean"
+        },
+        "ignoreRange": {
+          "description": "Determining whether or not Apiary should skip the inclusion of any Content-Range header on its response to Scotty.",
+          "type": "boolean"
+        }
+      }
+    },
+    "ChunkingConfig": {
+      "id": "ChunkingConfig",
+      "description": "Parameters for telling the service how to chunk the file. inspired by google3/cloud/ai/platform/extension/lib/retrieval/config/chunker_config.proto",
+      "type": "object",
+      "properties": {
+        "whiteSpaceConfig": {
+          "description": "White space chunking configuration.",
+          "$ref": "WhiteSpaceConfig"
+        }
+      }
+    },
+    "WhiteSpaceConfig": {
+      "id": "WhiteSpaceConfig",
+      "description": "Configuration for a white space chunking algorithm [white space delimited].",
+      "type": "object",
+      "properties": {
+        "maxTokensPerChunk": {
+          "description": "Maximum number of tokens per chunk. Tokens are defined as words for this chunking algorithm. Note: we are defining tokens as words split by whitespace as opposed to the output of a tokenizer. The context window of the latest gemini embedding model as of 2025-04-17 is currently 8192 tokens. We assume that the average word is 5 characters. Therefore, we set the upper limit to 2**9, which is 512 words, or 2560 tokens, assuming worst case a character per token. This is a conservative estimate meant to prevent context window overflow.",
+          "type": "integer",
+          "format": "int32"
+        },
+        "maxOverlapTokens": {
+          "description": "Maximum number of overlapping tokens between two adjacent chunks.",
+          "type": "integer",
+          "format": "int32"
+        }
+      }
+    },
+    "CustomLongRunningOperation": {
+      "id": "CustomLongRunningOperation",
+      "description": "This is a copy of google.longrunning.Operation. We need to copy it because for interacting with scotty, we need to add a scotty specific field that can't be added in the top level Operation proto.",
+      "type": "object",
+      "properties": {
+        "error": {
+          "description": "The error result of the operation in case of failure or cancellation.",
+          "$ref": "Status"
+        },
+        "response": {
+          "description": "The normal, successful response of the operation. If the original method returns no data on success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the response should have the type `XxxResponse`, where `Xxx` is the original method name. For example, if the original method name is `TakeSnapshot()`, the inferred response type is `TakeSnapshotResponse`.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object. Contains field @type with type URL."
+          }
+        },
+        "name": {
+          "description": "The server-assigned name, which is only unique within the same service that originally returns it. If you use the default HTTP mapping, the `name` should be a resource name ending with `operations/{unique_id}`.",
+          "type": "string"
+        },
+        "metadata": {
+          "description": "Service-specific metadata associated with the operation. It typically contains progress information and common metadata such as create time. Some services might not provide such metadata. Any method that returns a long-running operation should document the metadata type, if any.",
+          "type": "object",
+          "additionalProperties": {
+            "type": "any",
+            "description": "Properties of the object. Contains field @type with type URL."
+          }
+        },
+        "done": {
+          "description": "If the value is `false`, it means the operation is still in progress. If `true`, the operation is completed, and either `error` or `response` is available.",
+          "type": "boolean"
         }
       }
     },
