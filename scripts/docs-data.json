@@ -1702,7 +1702,7 @@
           "type": "boolean"
         },
         "thinkingBudget": {
-          "description": "Only one of the thinking_budget or thinking_level fields in this message may be set at a time. For backward compatibility, the validation will be done in application logic. The number of thoughts tokens that the model should generate.",
+          "description": "The number of thoughts tokens that the model should generate.",
           "type": "integer",
           "format": "int32"
         }
@@ -2154,8 +2154,8 @@
           "description": "Optional. Text of the chunk.",
           "type": "string"
         },
-        "ragStore": {
-          "description": "Optional. Name of the `RagStore` containing the document. Example: `ragStores/123`",
+        "fileSearchStore": {
+          "description": "Optional. Name of the `FileSearchStore` containing the document. Example: `fileSearchStores/123`",
           "type": "string"
         }
       }
@@ -4367,58 +4367,6 @@
         }
       }
     },
-    "RagStore": {
-      "id": "RagStore",
-      "description": "A `RagStore` is a collection of `Document`s.",
-      "type": "object",
-      "properties": {
-        "name": {
-          "description": "Output only. Immutable. Identifier. The `RagStore` resource name. It is an ID (name excluding the \"ragStores/\" prefix) that can contain up to 40 characters that are lowercase alphanumeric or dashes (-). It is output only. The unique name will be derived from `display_name` along with a 12 character random suffix. Example: `ragStores/my-awesome-rag-store-123a456b789c` If `display_name` is not provided, the name will be randomly generated.",
-          "readOnly": true,
-          "type": "string"
-        },
-        "displayName": {
-          "description": "Optional. The human-readable display name for the `RagStore`. The display name must be no more than 512 characters in length, including spaces. Example: \"Docs on Semantic Retriever\"",
-          "type": "string"
-        },
-        "createTime": {
-          "description": "Output only. The Timestamp of when the `RagStore` was created.",
-          "readOnly": true,
-          "type": "string",
-          "format": "google-datetime"
-        },
-        "updateTime": {
-          "description": "Output only. The Timestamp of when the `RagStore` was last updated.",
-          "readOnly": true,
-          "type": "string",
-          "format": "google-datetime"
-        },
-        "activeDocumentsCount": {
-          "description": "Output only. The number of documents in the Ragstore that are active and ready for retrieval.",
-          "readOnly": true,
-          "type": "string",
-          "format": "int64"
-        },
-        "pendingDocumentsCount": {
-          "description": "Output only. The number of documents in the Ragstore that are being processed.",
-          "readOnly": true,
-          "type": "string",
-          "format": "int64"
-        },
-        "failedDocumentsCount": {
-          "description": "Output only. The number of documents in the Ragstore that have failed processing.",
-          "readOnly": true,
-          "type": "string",
-          "format": "int64"
-        },
-        "sizeBytes": {
-          "description": "Output only. The size of raw bytes ingested into the Ragstore. This is the total size of all the documents in the Ragstore.",
-          "readOnly": true,
-          "type": "string",
-          "format": "int64"
-        }
-      }
-    },
     "Corpus": {
       "id": "Corpus",
       "description": "A `Corpus` is a collection of `Document`s. A project can create up to 10 corpora.",
@@ -4457,24 +4405,6 @@
           "type": "array",
           "items": {
             "$ref": "FileSearchStore"
-          }
-        },
-        "nextPageToken": {
-          "description": "A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages.",
-          "type": "string"
-        }
-      }
-    },
-    "ListRagStoresResponse": {
-      "id": "ListRagStoresResponse",
-      "description": "Response from `ListRagStores` containing a paginated list of `RagStores`. The results are sorted by ascending `rag_store.create_time`.",
-      "type": "object",
-      "properties": {
-        "ragStores": {
-          "description": "The returned rag_stores.",
-          "type": "array",
-          "items": {
-            "$ref": "RagStore"
           }
         },
         "nextPageToken": {
@@ -4664,7 +4594,7 @@
       "type": "object",
       "properties": {
         "name": {
-          "description": "Immutable. Identifier. The `Document` resource name. The ID (name excluding the \"ragStores/*/documents/\" prefix) can contain up to 40 characters that are lowercase alphanumeric or dashes (-). The ID cannot start or end with a dash. If the name is empty on create, a unique name will be derived from `display_name` along with a 12 character random suffix. Example: `ragStores/{corpus_id}/documents/my-awesome-doc-123a456b789c`",
+          "description": "Immutable. Identifier. The `Document` resource name. The ID (name excluding the \"fileSearchStores/*/documents/\" prefix) can contain up to 40 characters that are lowercase alphanumeric or dashes (-). The ID cannot start or end with a dash. If the name is empty on create, a unique name will be derived from `display_name` along with a 12 character random suffix. Example: `fileSearchStores/{file_search_store_id}/documents/my-awesome-doc-123a456b789c`",
           "type": "string"
         },
         "displayName": {
