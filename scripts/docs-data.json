@@ -579,7 +579,7 @@
           "type": "string"
         },
         "unreachable": {
-          "description": "Unordered list. Unreachable resources. Populated when the request sets `ListOperationsRequest.return_partial_success` and reads across collections e.g. when attempting to list all resources across all supported locations.",
+          "description": "Unordered list. Unreachable resources. Populated when the request sets `ListOperationsRequest.return_partial_success` and reads across collections. For example, when attempting to list all resources across all supported locations.",
           "type": "array",
           "items": {
             "type": "string"
@@ -1790,7 +1790,8 @@
             "The model was expected to generate an image, but none was generated.",
             "Image generation stopped due to recitation.",
             "Model generated a tool call but no tools were enabled in the request.",
-            "Model called too many tools consecutively, thus the system exited execution."
+            "Model called too many tools consecutively, thus the system exited execution.",
+            "Request has at least one thought signature missing."
           ],
           "enum": [
             "FINISH_REASON_UNSPECIFIED",
@@ -1810,7 +1811,8 @@
             "NO_IMAGE",
             "IMAGE_RECITATION",
             "UNEXPECTED_TOOL_CALL",
-            "TOO_MANY_TOOL_CALLS"
+            "TOO_MANY_TOOL_CALLS",
+            "MISSING_THOUGHT_SIGNATURE"
           ]
         },
         "finishMessage": {
@@ -4913,7 +4915,6 @@
     },
     "CustomLongRunningOperation": {
       "id": "CustomLongRunningOperation",
-      "description": "This is a copy of google.longrunning.Operation. We need to copy it because for interacting with scotty, we need to add a scotty specific field that can't be added in the top level Operation proto.",
       "type": "object",
       "properties": {
         "error": {
