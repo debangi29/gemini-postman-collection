@@ -1705,6 +1705,20 @@
           "description": "The number of thoughts tokens that the model should generate.",
           "type": "integer",
           "format": "int32"
+        },
+        "thinkingLevel": {
+          "description": "Optional. The level of thoughts tokens that the model should generate.",
+          "type": "string",
+          "enumDescriptions": [
+            "Default value.",
+            "Low thinking level.",
+            "High thinking level."
+          ],
+          "enum": [
+            "THINKING_LEVEL_UNSPECIFIED",
+            "LOW",
+            "HIGH"
+          ]
         }
       }
     },
