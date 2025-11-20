@@ -1707,7 +1707,7 @@
           "format": "int32"
         },
         "thinkingLevel": {
-          "description": "Optional. The level of thoughts tokens that the model should generate.",
+          "description": "Optional. Controls the maximum depth of the model's internal reasoning process before it produces a response. If not specified, the default is HIGH. Recommended for Gemini 3 or later models. Use with earlier models results in an error.",
           "type": "string",
           "enumDescriptions": [
             "Default value.",
@@ -4447,163 +4447,6 @@
         }
       }
     },
-    "QueryCorpusRequest": {
-      "id": "QueryCorpusRequest",
-      "description": "Request for querying a `Corpus`.",
-      "type": "object",
-      "properties": {
-        "query": {
-          "description": "Required. Query string to perform semantic search.",
-          "type": "string"
-        },
-        "metadataFilters": {
-          "description": "Optional. Filter for `Chunk` and `Document` metadata. Each `MetadataFilter` object should correspond to a unique key. Multiple `MetadataFilter` objects are joined by logical \"AND\"s. Example query at document level: (year >= 2020 OR year < 2010) AND (genre = drama OR genre = action) `MetadataFilter` object list: metadata_filters = [ {key = \"document.custom_metadata.year\" conditions = [{int_value = 2020, operation = GREATER_EQUAL}, {int_value = 2010, operation = LESS}]}, {key = \"document.custom_metadata.year\" conditions = [{int_value = 2020, operation = GREATER_EQUAL}, {int_value = 2010, operation = LESS}]}, {key = \"document.custom_metadata.genre\" conditions = [{string_value = \"drama\", operation = EQUAL}, {string_value = \"action\", operation = EQUAL}]}] Example query at chunk level for a numeric range of values: (year > 2015 AND year <= 2020) `MetadataFilter` object list: metadata_filters = [ {key = \"chunk.custom_metadata.year\" conditions = [{int_value = 2015, operation = GREATER}]}, {key = \"chunk.custom_metadata.year\" conditions = [{int_value = 2020, operation = LESS_EQUAL}]}] Note: \"AND\"s for the same key are only supported for numeric values. String values only support \"OR\"s for the same key.",
-          "type": "array",
-          "items": {
-            "$ref": "MetadataFilter"
-          }
-        },
-        "resultsCount": {
-          "description": "Optional. The maximum number of `Chunk`s to return. The service may return fewer `Chunk`s. If unspecified, at most 10 `Chunk`s will be returned. The maximum specified result count is 100.",
-          "type": "integer",
-          "format": "int32"
-        }
-      }
-    },
-    "QueryCorpusResponse": {
-      "id": "QueryCorpusResponse",
-      "description": "Response from `QueryCorpus` containing a list of relevant chunks.",
-      "type": "object",
-      "properties": {
-        "relevantChunks": {
-          "description": "The relevant chunks.",
-          "type": "array",
-          "items": {
-            "$ref": "RelevantChunk"
-          }
-        }
-      }
-    },
-    "RelevantChunk": {
-      "id": "RelevantChunk",
-      "description": "The information for a chunk relevant to a query.",
-      "type": "object",
-      "properties": {
-        "chunkRelevanceScore": {
-          "description": "`Chunk` relevance to the query.",
-          "type": "number",
-          "format": "float"
-        },
-        "chunk": {
-          "description": "`Chunk` associated with the query.",
-          "$ref": "Chunk"
-        },
-        "document": {
-          "description": "`Document` associated with the chunk.",
-          "$ref": "Document"
-        }
-      }
-    },
-    "Chunk": {
-      "id": "Chunk",
-      "description": "A `Chunk` is a subpart of a `Document` that is treated as an independent unit for the purposes of vector representation and storage.",
-      "type": "object",
-      "properties": {
-        "name": {
-          "description": "Immutable. Identifier. The `Chunk` resource name. The ID (name excluding the \"corpora/*/documents/*/chunks/\" prefix) can contain up to 40 characters that are lowercase alphanumeric or dashes (-). The ID cannot start or end with a dash. If the name is empty on create, a random 12-character unique ID will be generated. Example: `corpora/{corpus_id}/documents/{document_id}/chunks/123a456b789c`",
-          "type": "string"
-        },
-        "data": {
-          "description": "Required. The content for the `Chunk`, such as the text string. The maximum number of tokens per chunk is 2043.",
-          "$ref": "ChunkData"
-        },
-        "customMetadata": {
-          "description": "Optional. User provided custom metadata stored as key-value pairs. The maximum number of `CustomMetadata` per chunk is 20.",
-          "type": "array",
-          "items": {
-            "$ref": "CustomMetadata"
-          }
-        },
-        "createTime": {
-          "description": "Output only. The Timestamp of when the `Chunk` was created.",
-          "readOnly": true,
-          "type": "string",
-          "format": "google-datetime"
-        },
-        "updateTime": {
-          "description": "Output only. The Timestamp of when the `Chunk` was last updated.",
-          "readOnly": true,
-          "type": "string",
-          "format": "google-datetime"
-        },
-        "state": {
-          "description": "Output only. Current state of the `Chunk`.",
-          "readOnly": true,
-          "type": "string",
-          "enumDescriptions": [
-            "The default value. This value is used if the state is omitted.",
-            "`Chunk` is being processed (embedding and vector storage).",
-            "`Chunk` is processed and available for querying.",
-            "`Chunk` failed processing."
-          ],
-          "enum": [
-            "STATE_UNSPECIFIED",
-            "STATE_PENDING_PROCESSING",
-            "STATE_ACTIVE",
-            "STATE_FAILED"
-          ]
-        }
-      }
-    },
-    "ChunkData": {
-      "id": "ChunkData",
-      "description": "Extracted data that represents the `Chunk` content.",
-      "type": "object",
-      "properties": {
-        "stringValue": {
-          "description": "The `Chunk` content as a string. The maximum number of tokens per chunk is 2043.",
-          "type": "string"
-        }
-      }
-    },
-    "CustomMetadata": {
-      "id": "CustomMetadata",
-      "description": "User provided metadata stored as key-value pairs.",
-      "type": "object",
-      "properties": {
-        "stringValue": {
-          "description": "The string value of the metadata to store.",
-          "type": "string"
-        },
-        "stringListValue": {
-          "description": "The StringList value of the metadata to store.",
-          "$ref": "StringList"
-        },
-        "numericValue": {
-          "description": "The numeric value of the metadata to store.",
-          "type": "number",
-          "format": "float"
-        },
-        "key": {
-          "description": "Required. The key of the metadata to store.",
-          "type": "string"
-        }
-      }
-    },
-    "StringList": {
-      "id": "StringList",
-      "description": "User provided string values assigned to a single metadata key.",
-      "type": "object",
-      "properties": {
-        "values": {
-          "description": "The string values of the metadata to store.",
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "Document": {
       "id": "Document",
       "description": "A `Document` is a collection of `Chunk`s.",
@@ -4666,6 +4509,44 @@
         }
       }
     },
+    "CustomMetadata": {
+      "id": "CustomMetadata",
+      "description": "User provided metadata stored as key-value pairs.",
+      "type": "object",
+      "properties": {
+        "stringValue": {
+          "description": "The string value of the metadata to store.",
+          "type": "string"
+        },
+        "stringListValue": {
+          "description": "The StringList value of the metadata to store.",
+          "$ref": "StringList"
+        },
+        "numericValue": {
+          "description": "The numeric value of the metadata to store.",
+          "type": "number",
+          "format": "float"
+        },
+        "key": {
+          "description": "Required. The key of the metadata to store.",
+          "type": "string"
+        }
+      }
+    },
+    "StringList": {
+      "id": "StringList",
+      "description": "User provided string values assigned to a single metadata key.",
+      "type": "object",
+      "properties": {
+        "values": {
+          "description": "The string values of the metadata to store.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "ListDocumentsResponse": {
       "id": "ListDocumentsResponse",
       "description": "Response from `ListDocuments` containing a paginated list of `Document`s. The `Document`s are sorted by ascending `document.create_time`.",
@@ -4681,43 +4562,6 @@
         "nextPageToken": {
           "description": "A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages.",
           "type": "string"
-        }
-      }
-    },
-    "QueryDocumentRequest": {
-      "id": "QueryDocumentRequest",
-      "description": "Request for querying a `Document`.",
-      "type": "object",
-      "properties": {
-        "query": {
-          "description": "Required. Query string to perform semantic search.",
-          "type": "string"
-        },
-        "resultsCount": {
-          "description": "Optional. The maximum number of `Chunk`s to return. The service may return fewer `Chunk`s. If unspecified, at most 10 `Chunk`s will be returned. The maximum specified result count is 100.",
-          "type": "integer",
-          "format": "int32"
-        },
-        "metadataFilters": {
-          "description": "Optional. Filter for `Chunk` metadata. Each `MetadataFilter` object should correspond to a unique key. Multiple `MetadataFilter` objects are joined by logical \"AND\"s. Note: `Document`-level filtering is not supported for this request because a `Document` name is already specified. Example query: (year >= 2020 OR year < 2010) AND (genre = drama OR genre = action) `MetadataFilter` object list: metadata_filters = [ {key = \"chunk.custom_metadata.year\" conditions = [{int_value = 2020, operation = GREATER_EQUAL}, {int_value = 2010, operation = LESS}}, {key = \"chunk.custom_metadata.genre\" conditions = [{string_value = \"drama\", operation = EQUAL}, {string_value = \"action\", operation = EQUAL}}] Example query for a numeric range of values: (year > 2015 AND year <= 2020) `MetadataFilter` object list: metadata_filters = [ {key = \"chunk.custom_metadata.year\" conditions = [{int_value = 2015, operation = GREATER}]}, {key = \"chunk.custom_metadata.year\" conditions = [{int_value = 2020, operation = LESS_EQUAL}]}] Note: \"AND\"s for the same key are only supported for numeric values. String values only support \"OR\"s for the same key.",
-          "type": "array",
-          "items": {
-            "$ref": "MetadataFilter"
-          }
-        }
-      }
-    },
-    "QueryDocumentResponse": {
-      "id": "QueryDocumentResponse",
-      "description": "Response from `QueryDocument` containing a list of relevant chunks.",
-      "type": "object",
-      "properties": {
-        "relevantChunks": {
-          "description": "The returned relevant chunks.",
-          "type": "array",
-          "items": {
-            "$ref": "RelevantChunk"
-          }
         }
       }
     },
@@ -4768,136 +4612,6 @@
           "description": "Maximum number of overlapping tokens between two adjacent chunks.",
           "type": "integer",
           "format": "int32"
-        }
-      }
-    },
-    "BatchCreateChunksRequest": {
-      "id": "BatchCreateChunksRequest",
-      "description": "Request to batch create `Chunk`s.",
-      "type": "object",
-      "properties": {
-        "requests": {
-          "description": "Required. The request messages specifying the `Chunk`s to create. A maximum of 100 `Chunk`s can be created in a batch.",
-          "type": "array",
-          "items": {
-            "$ref": "CreateChunkRequest"
-          }
-        }
-      }
-    },
-    "CreateChunkRequest": {
-      "id": "CreateChunkRequest",
-      "description": "Request to create a `Chunk`.",
-      "type": "object",
-      "properties": {
-        "parent": {
-          "description": "Required. The name of the `Document` where this `Chunk` will be created. Example: `corpora/my-corpus-123/documents/the-doc-abc`",
-          "type": "string"
-        },
-        "chunk": {
-          "description": "Required. The `Chunk` to create.",
-          "$ref": "Chunk"
-        }
-      }
-    },
-    "BatchCreateChunksResponse": {
-      "id": "BatchCreateChunksResponse",
-      "description": "Response from `BatchCreateChunks` containing a list of created `Chunk`s.",
-      "type": "object",
-      "properties": {
-        "chunks": {
-          "description": "`Chunk`s created.",
-          "type": "array",
-          "items": {
-            "$ref": "Chunk"
-          }
-        }
-      }
-    },
-    "BatchUpdateChunksRequest": {
-      "id": "BatchUpdateChunksRequest",
-      "description": "Request to batch update `Chunk`s.",
-      "type": "object",
-      "properties": {
-        "requests": {
-          "description": "Required. The request messages specifying the `Chunk`s to update. A maximum of 100 `Chunk`s can be updated in a batch.",
-          "type": "array",
-          "items": {
-            "$ref": "UpdateChunkRequest"
-          }
-        }
-      }
-    },
-    "UpdateChunkRequest": {
-      "id": "UpdateChunkRequest",
-      "description": "Request to update a `Chunk`.",
-      "type": "object",
-      "properties": {
-        "chunk": {
-          "description": "Required. The `Chunk` to update.",
-          "$ref": "Chunk"
-        },
-        "updateMask": {
-          "description": "Required. The list of fields to update. Currently, this only supports updating `custom_metadata` and `data`.",
-          "type": "string",
-          "format": "google-fieldmask"
-        }
-      }
-    },
-    "BatchUpdateChunksResponse": {
-      "id": "BatchUpdateChunksResponse",
-      "description": "Response from `BatchUpdateChunks` containing a list of updated `Chunk`s.",
-      "type": "object",
-      "properties": {
-        "chunks": {
-          "description": "`Chunk`s updated.",
-          "type": "array",
-          "items": {
-            "$ref": "Chunk"
-          }
-        }
-      }
-    },
-    "BatchDeleteChunksRequest": {
-      "id": "BatchDeleteChunksRequest",
-      "description": "Request to batch delete `Chunk`s.",
-      "type": "object",
-      "properties": {
-        "requests": {
-          "description": "Required. The request messages specifying the `Chunk`s to delete.",
-          "type": "array",
-          "items": {
-            "$ref": "DeleteChunkRequest"
-          }
-        }
-      }
-    },
-    "DeleteChunkRequest": {
-      "id": "DeleteChunkRequest",
-      "description": "Request to delete a `Chunk`.",
-      "type": "object",
-      "properties": {
-        "name": {
-          "description": "Required. The resource name of the `Chunk` to delete. Example: `corpora/my-corpus-123/documents/the-doc-abc/chunks/some-chunk`",
-          "type": "string"
-        }
-      }
-    },
-    "ListChunksResponse": {
-      "id": "ListChunksResponse",
-      "description": "Response from `ListChunks` containing a paginated list of `Chunk`s. The `Chunk`s are sorted by ascending `chunk.create_time`.",
-      "type": "object",
-      "properties": {
-        "chunks": {
-          "description": "The returned `Chunk`s.",
-          "type": "array",
-          "items": {
-            "$ref": "Chunk"
-          }
-        },
-        "nextPageToken": {
-          "description": "A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted, there are no more pages.",
-          "type": "string"
         }
       }
     },
