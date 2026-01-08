@@ -1853,6 +1853,11 @@
           "description": "Output only. response_id is used to identify each response.",
           "readOnly": true,
           "type": "string"
+        },
+        "modelStatus": {
+          "description": "Output only. The current model status of this model.",
+          "readOnly": true,
+          "$ref": "ModelStatus"
         }
       }
     },
@@ -2163,7 +2168,7 @@
           "$ref": "SearchEntryPoint"
         },
         "groundingChunks": {
-          "description": "List of supporting references retrieved from specified grounding source.",
+          "description": "List of supporting references retrieved from specified grounding source. When streaming, this only contains the grounding chunks that have not been included in the grounding metadata of previous responses.",
           "type": "array",
           "items": {
             "$ref": "GroundingChunk"
@@ -2336,7 +2341,7 @@
           "$ref": "GoogleAiGenerativelanguageV1betaSegment"
         },
         "groundingChunkIndices": {
-          "description": "Optional. A list of indices (into 'grounding_chunk') specifying the citations associated with the claim. For instance [1,3,4] means that grounding_chunk[1], grounding_chunk[3], grounding_chunk[4] are the retrieved content attributed to the claim.",
+          "description": "Optional. A list of indices (into 'grounding_chunk' in `response.candidate.grounding_metadata`) specifying the citations associated with the claim. For instance [1,3,4] means that grounding_chunk[1], grounding_chunk[3], grounding_chunk[4] are the retrieved content attributed to the claim. If the response is streaming, the grounding_chunk_indices refer to the indices across all responses. It is the client's responsibility to accumulate the grounding chunks from all responses (while maintaining the same order).",
           "type": "array",
           "items": {
             "type": "integer",
@@ -2629,6 +2634,56 @@
           "description": "Number of tokens.",
           "type": "integer",
           "format": "int32"
+        }
+      }
+    },
+    "ModelStatus": {
+      "id": "ModelStatus",
+      "description": "The status of the underlying model. This is used to indicate the stage of the underlying model and the retirement time if applicable.",
+      "type": "object",
+      "properties": {
+        "modelStage": {
+          "description": "The stage of the underlying model.",
+          "type": "string",
+          "enumDescriptions": [
+            "Unspecified model stage.",
+            "The underlying model is subject to lots of tunings.",
+            "Models in this stage are for experimental purposes only.",
+            "Models in this stage are more mature than experimental models.",
+            "Models in this stage are considered stable and ready for production use.",
+            "If the model is on this stage, it means that this model is on the path to deprecation in near future. Only existing customers can use this model.",
+            "Models in this stage are deprecated. These models cannot be used.",
+            "Models in this stage are retired. These models cannot be used."
+          ],
+          "enumDeprecated": [
+            false,
+            true,
+            false,
+            false,
+            false,
+            false,
+            true,
+            false
+          ],
+          "enum": [
+            "MODEL_STAGE_UNSPECIFIED",
+            "UNSTABLE_EXPERIMENTAL",
+            "EXPERIMENTAL",
+            "PREVIEW",
+            "STABLE",
+            "LEGACY",
+            "DEPRECATED",
+            "RETIRED"
+          ]
+        },
+        "retirementTime": {
+          "description": "The time at which the model will be retired.",
+          "type": "string",
+          "format": "google-datetime"
+        },
+        "message": {
+          "description": "A message explaining the model status.",
+          "type": "string"
         }
       }
     },
