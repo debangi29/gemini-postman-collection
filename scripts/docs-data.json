@@ -3932,6 +3932,34 @@
         }
       }
     },
+    "RegisterFilesRequest": {
+      "id": "RegisterFilesRequest",
+      "description": "Request for `RegisterFiles`.",
+      "type": "object",
+      "properties": {
+        "uris": {
+          "description": "Required. The Google Cloud Storage URIs to register. Example: `gs://bucket/object`.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "RegisterFilesResponse": {
+      "id": "RegisterFilesResponse",
+      "description": "Response for `RegisterFiles`.",
+      "type": "object",
+      "properties": {
+        "files": {
+          "description": "The registered files to be used when calling GenerateContent.",
+          "type": "array",
+          "items": {
+            "$ref": "File"
+          }
+        }
+      }
+    },
     "ListFilesResponse": {
       "id": "ListFilesResponse",
       "description": "Response for `ListFiles`.",
