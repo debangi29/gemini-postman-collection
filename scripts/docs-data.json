@@ -2171,6 +2171,13 @@
             "type": "string"
           }
         },
+        "imageSearchQueries": {
+          "description": "Image search queries used for grounding.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
         "googleMapsWidgetContextToken": {
           "description": "Optional. Resource name of the Google Maps widget context token that can be used with the PlacesContextElement widget in order to render contextual data. Only populated in the case that grounding with Google Maps is enabled.",
           "type": "string"
@@ -2218,11 +2225,13 @@
       "type": "object",
       "properties": {
         "uri": {
-          "description": "URI reference of the chunk.",
+          "description": "Output only. URI reference of the chunk.",
+          "readOnly": true,
           "type": "string"
         },
         "title": {
-          "description": "Title of the chunk.",
+          "description": "Output only. Title of the chunk.",
+          "readOnly": true,
           "type": "string"
         }
       }
