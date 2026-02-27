@@ -937,7 +937,7 @@
     },
     "CodeExecutionResult": {
       "id": "CodeExecutionResult",
-      "description": "Result of executing the `ExecutableCode`. Only generated when using the `CodeExecution`, and always follows a `part` containing the `ExecutableCode`.",
+      "description": "Result of executing the `ExecutableCode`. Generated only when the `CodeExecution` tool is used.",
       "type": "object",
       "properties": {
         "outcome": {
@@ -945,9 +945,9 @@
           "type": "string",
           "enumDescriptions": [
             "Unspecified status. This value should not be used.",
-            "Code execution completed successfully.",
-            "Code execution finished but with a failure. `stderr` should contain the reason.",
-            "Code execution ran for too long, and was cancelled. There may or may not be a partial output present."
+            "Code execution completed successfully. `output` contains the stdout, if any.",
+            "Code execution failed. `output` contains the stderr and stdout, if any.",
+            "Code execution ran for too long, and was cancelled. There may or may not be a partial `output` present."
           ],
           "enum": [
             "OUTCOME_UNSPECIFIED",
@@ -1826,7 +1826,7 @@
           "type": "string"
         },
         "imageSize": {
-          "description": "Optional. Specifies the size of generated images. Supported values are `512PX`, `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
+          "description": "Optional. Specifies the size of generated images. Supported values are `512`, `1K`, `2K`, `4K`. If not specified, the model will use default value `1K`.",
           "type": "string"
         }
       }
@@ -2233,7 +2233,7 @@
     },
     "GroundingChunk": {
       "id": "GroundingChunk",
-      "description": "Grounding chunk.",
+      "description": "A `GroundingChunk` represents a segment of supporting evidence that grounds the model's response. It can be a chunk from the web, a retrieved context from a file, or information from Google Maps.",
       "type": "object",
       "properties": {
         "web": {
@@ -2335,7 +2335,7 @@
           "type": "string"
         },
         "placeId": {
-          "description": "This ID of the place, in `places/{place_id}` format. A user can use this ID to look up that place.",
+          "description": "The ID of the place, in `places/{place_id}` format. A user can use this ID to look up that place.",
           "type": "string"
         },
         "placeAnswerSources": {
